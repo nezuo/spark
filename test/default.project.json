@@ -1,0 +1,30 @@
+{
+  "name": "spark-test",
+  "tree": {
+    "$className": "DataModel",
+    "Players": {
+      "$properties": {
+        "CharacterAutoLoads": false
+      }
+    },
+    "ReplicatedStorage": {
+      "MockUserInputService": {
+        "$path": "MockUserInputService.lua"
+      },
+      "Packages": {
+        "Spark": {
+          "$path": "../"
+        },
+        "$path": "../Packages"
+      },
+      "Signal": {
+        "$path": "Signal.lua"
+      }
+    },
+    "ServerScriptService": {
+      "runTests": {
+        "$path": "runTests.server.lua"
+      }
+    }
+  }
+}
