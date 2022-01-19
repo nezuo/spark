@@ -1,5 +1,10 @@
 local ButtonControl = require(script.Parent.Parent.Controls.ButtonControl)
 
+--[=[
+	Exports a ButtonControl for `KeyCode` 2 to 140. For example, `Keyboard.Space`.
+
+	@class Keyboard
+]=]
 local Keyboard = {}
 
 local keyCodes = Enum.KeyCode:GetEnumItems()

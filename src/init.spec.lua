@@ -14,6 +14,8 @@ return function()
 	beforeEach(function()
 		mockUserInputService = MockUserInputService.new()
 
+		InputState._userInputService = mockUserInputService
+
 		actions = Actions.new()
 			:createAction("button", ActionKind.Button)
 			:createAction("axis1d", ActionKind.Axis1d)

@@ -33,11 +33,26 @@ local function updateAction(action, bindings)
 	action._subject:notify(newValue)
 end
 
+--[=[
+	An InputState updates all controls and actions.
+
+	:::warning
+	You should only create one InputState.
+	:::
+
+	@class InputState
+]=]
 local InputState = {}
 InputState.__index = InputState
 
-function InputState.new(_userInputService)
-	_userInputService = if _userInputService ~= nil then _userInputService else  UserInputService
+--[=[
+	Create a new InputState.
+
+	@return InputState
+]=]
+function InputState.new()
+	local userInputService =
+		if InputState._userInputService ~= nil then InputState._userInputService else  UserInputService
 
 	local inputTypeToControls = {}
 	local resetableControls = {}
@@ -69,8 +84,8 @@ function InputState.new(_userInputService)
 		end
 	end
 
-	_userInputService.InputBegan:Connect(onInputUpdated)
-	_userInputService.InputChanged:Connect(onInputUpdated)
+	userInputService.InputBegan:Connect(onInputUpdated)
+	userInputService.InputChanged:Connect(onInputUpdated)
 
 	return setmetatable({
 		_actions = {},
@@ -78,10 +93,20 @@ function InputState.new(_userInputService)
 	}, InputState)
 end
 
+--[=[
+	Actions added to the InputState will be updated when [`InputState:update`](/api/InputState#update) is called.
+
+	@param actions Actions
+]=]
 function InputState:addActions(actions)
 	table.insert(self._actions, actions)
 end
 
+--[=[
+	Updates all actions added to the InputState.
+
+	After updating the actions, it will also reset controls like Mouse.Delta (TODO LINK?).
+]=]
 function InputState:update()
 	for _, actions in ipairs(self._actions) do
 		for _, action in pairs(actions._actions) do

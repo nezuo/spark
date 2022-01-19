@@ -2,6 +2,34 @@ local Axis1dControl = require(script.Parent.Parent.Controls.Axis1dControl)
 local Axis2dControl = require(script.Parent.Parent.Controls.Axis2dControl)
 local ButtonControl = require(script.Parent.Parent.Controls.ButtonControl)
 
+--[=[
+	@class Mouse
+]=]
+
+--[=[
+	@prop LeftButton ButtonControl
+	@within Mouse
+]=]
+
+--[=[
+	@prop RightButton ButtonControl
+	@within Mouse
+]=]
+
+--[=[
+	@prop MiddleButton ButtonControl
+	@within Mouse
+]=]
+
+--[=[
+	@prop ScrollWheel Axis1dControl
+	@within Mouse
+]=]
+
+--[=[
+	@prop Delta Axis2dControl
+	@within Mouse
+]=]
 return {
 	LeftButton = ButtonControl.new(Enum.UserInputType.MouseButton1),
 	RightButton = ButtonControl.new(Enum.UserInputType.MouseButton2),
