@@ -1,3 +1,5 @@
+-- Taken from https://github.com/freddylist/llama.
+
 local function equalObjects(...)
 	local firstObject = select(1, ...)
 
