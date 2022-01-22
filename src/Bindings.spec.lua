@@ -1,71 +1,115 @@
 local Spark = require(script.Parent)
 
 local ActionKind = Spark.ActionKind
-local Bindings = Spark.Bindings
-local Composite1d = Spark.Composite1d
-local Composite2d = Spark.Composite2d
-local Devices = Spark.Devices
 local Actions = Spark.Actions
+local Bindings = Spark.Bindings
+local InputState = Spark.InputState
+local Keyboard = Spark.Devices.Keyboard
+local Mouse = Spark.Devices.Mouse
+local Composite1d = Spark.Composite1d
 
 return function()
-	describe("Binding:bind", function()
-		it("should thrown when the action doesn't exist", function()
-			local actions = Actions.new()
+	local actions, inputState
+	beforeEach(function()
+		actions = Actions.new()
+			:createAction("button", ActionKind.Button)
+			:createAction("axis1d", ActionKind.Axis1d)
+			:createAction("axis2d", ActionKind.Axis2d)
 
+		inputState = InputState.new()
+		inputState:addActions(actions)
+
+		actions.bindings:bind("button", Keyboard.Space):bind("button", Keyboard.Tab, "Group"):bind(
+			"axis1d",
+			Composite1d.new({
+				positive = Keyboard.D,
+				negative = Keyboard.A,
+			})
+		)
+	end)
+
+	describe("Binding:bind", function()
+		it("should throw when the action doesn't exist", function()
 			expect(function()
-				Bindings.new(actions):bind("unknown", Devices.Keyboard.Space)
+				Bindings.new(actions):bind("unknown", Keyboard.Space)
 			end).to.throw("Action 'unknown' does not exist")
 		end)
 
 		it("should throw when control doesn't match action's ActionKind", function()
-			local actions = Actions.new()
-				:createAction("button", ActionKind.Button)
-				:createAction("axis1d", ActionKind.Axis1d)
-				:createAction("axis2d", ActionKind.Axis2d)
-
-			local button = Devices.Keyboard.Space
-			local axis1d = Devices.Mouse.ScrollWheel
-			local axis2d = Devices.Mouse.Delta
-			local composite1d = Composite1d.new({ positive = Devices.Keyboard.D, negative = Devices.Keyboard.A })
-			local composite2d = Composite2d.new({
-				up = Devices.Keyboard.W,
-				down = Devices.Keyboard.S,
-				left = Devices.Keyboard.A,
-				right = Devices.Keyboard.D,
-			})
+			expect(function()
+				actions.bindings:bind("button", Mouse.ScrollWheel)
+			end).to.throw("Control of ValueKind.Number cannot be used with action of ActionKind.Button")
+			expect(function()
+				actions.bindings:bind("button", Mouse.Delta)
+			end).to.throw("Control of ValueKind.Vector2 cannot be used with action of ActionKind.Button")
 
 			expect(function()
-				Bindings.new(actions):bind("button", axis1d)
-			end).to.throw("Cannot use control with ActionKind.Button")
+				actions.bindings:bind("axis1d", Keyboard.Space)
+			end).to.throw("Control of ValueKind.Boolean cannot be used with action of ActionKind.Axis1d")
 			expect(function()
-				Bindings.new(actions):bind("button", axis2d)
-			end).to.throw("Cannot use control with ActionKind.Button")
-			expect(function()
-				Bindings.new(actions):bind("button", composite1d)
-			end).to.throw("Cannot use control with ActionKind.Button")
-			expect(function()
-				Bindings.new(actions):bind("button", composite2d)
-			end).to.throw("Cannot use control with ActionKind.Button")
+				actions.bindings:bind("axis1d", Mouse.Delta)
+			end).to.throw("Control of ValueKind.Vector2 cannot be used with action of ActionKind.Axis1d")
 
 			expect(function()
-				Bindings.new(actions):bind("axis1d", button)
-			end).to.throw("Cannot use control with ActionKind.Axis1d")
+				actions.bindings:bind("axis2d", Keyboard.Space)
+			end).to.throw("Control of ValueKind.Boolean cannot be used with action of ActionKind.Axis2d")
 			expect(function()
-				Bindings.new(actions):bind("axis1d", axis2d)
-			end).to.throw("Cannot use control with ActionKind.Axis1d")
-			expect(function()
-				Bindings.new(actions):bind("axis1d", composite2d)
-			end).to.throw("Cannot use control with ActionKind.Axis1d")
+				actions.bindings:bind("axis2d", Mouse.ScrollWheel)
+			end).to.throw("Control of ValueKind.Number cannot be used with action of ActionKind.Axis2d")
+		end)
+	end)
 
+	describe("Binding:filter", function()
+		it("should throw when the action doesn't exist", function()
 			expect(function()
-				Bindings.new(actions):bind("axis2d", button)
-			end).to.throw("Cannot use control with ActionKind.Axis2d")
+				actions.bindings:filter("unknown", function()
+					return true
+				end)
+			end).to.throw("Action 'unknown' does not exist")
+		end)
+
+		it("should remove all controls", function(context)
+			actions.bindings:filter("button", function()
+				return false
+			end)
+
+			context.press(Enum.KeyCode.Space)
+			inputState:update()
+			expect(actions:get("button"):get()).to.equal(false)
+		end)
+
+		it("should remove all controls in group", function(context)
+			actions.bindings:filter("button", function(group)
+				return group ~= "Group"
+			end)
+
+			context.press(Enum.KeyCode.Tab)
+			inputState:update()
+			expect(actions:get("button"):get()).to.equal(false)
+
+			context.press(Enum.KeyCode.Space)
+			inputState:update()
+			expect(actions:get("button"):get()).to.equal(true)
+		end)
+	end)
+
+	describe("Binding:forEachComposite", function()
+		it("should throw when the action doesn't exist", function()
 			expect(function()
-				Bindings.new(actions):bind("axis2d", axis1d)
-			end).to.throw("Cannot use control with ActionKind.Axis2d")
-			expect(function()
-				Bindings.new(actions):bind("axis2d", composite1d)
-			end).to.throw("Cannot use control with ActionKind.Axis2d")
+				actions.bindings:forEachComposite("unknown", function(composite)
+					return composite
+				end)
+			end).to.throw("Action 'unknown' does not exist")
+		end)
+
+		it("should rebind composite's positive control", function(context)
+			actions.bindings:forEachComposite("axis1d", function(composite)
+				composite.positive = Keyboard.F
+			end)
+
+			context.press(Enum.KeyCode.F)
+			inputState:update()
+			expect(actions:get("axis1d"):get()).to.equal(1)
 		end)
 	end)
 end

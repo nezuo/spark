@@ -6,5 +6,6 @@ realm = "shared"
 
 [dependencies]
 enumerate = "nezuo/enumerate@0.1.5"
+Promise = "evaera/promise@3.2.1"
 Subject = "nezuo/subject@0.1.0"
 TestEZ = "roblox/testez@0.4.1"

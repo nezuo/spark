@@ -1,4 +1,4 @@
-local ActionKind = require(script.Parent.Parent.ActionKind)
+local ValueKind = require(script.Parent.Parent.ValueKind)
 
 --[=[
 	@interface Composite1dOptions
@@ -14,8 +14,19 @@ local ActionKind = require(script.Parent.Parent.ActionKind)
 
 	@class Composite1d
 ]=]
+
+--[=[
+	@prop positive ButtonControl
+	@within Composite1d
+]=]
+
+--[=[
+	@prop negative ButtonControl
+	@within Composite1d
+]=]
 local Composite1d = {
-	_actionKind = ActionKind.Axis1d,
+	_valueKind = ValueKind.Number,
+	_isComposite = true,
 }
 Composite1d.__index = Composite1d
 
@@ -32,21 +43,21 @@ Composite1d.__index = Composite1d
 	@param options Composite1dOptions
 	@return Composite1d
 ]=]
-function Composite1d.new(options) -- TODO: assert controls are buttonControls
+function Composite1d.new(options)
 	return setmetatable({
-		_positive = options.positive,
-		_negative = options.negative,
+		positive = options.positive, -- TODO: document
+		negative = options.negative, -- TODO: document
 	}, Composite1d)
 end
 
 function Composite1d:_getValue()
 	local value = 0
 
-	if self._positive:_getValue() then
+	if self.positive:_getValue() then
 		value += 1
 	end
 
-	if self._negative:_getValue() then
+	if self.negative:_getValue() then
 		value -= 1
 	end
 
