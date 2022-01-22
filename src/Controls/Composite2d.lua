@@ -1,4 +1,4 @@
-local ActionKind = require(script.Parent.Parent.ActionKind)
+local ValueKind = require(script.Parent.Parent.ValueKind)
 
 --[=[
 	@interface Composite2dOptions
@@ -16,8 +16,29 @@ local ActionKind = require(script.Parent.Parent.ActionKind)
 
 	@class Composite2d
 ]=]
+
+--[=[
+	@prop up ButtonControl
+	@within Composite2d
+]=]
+
+--[=[
+	@prop down ButtonControl
+	@within Composite2d
+]=]
+
+--[=[
+	@prop left ButtonControl
+	@within Composite2d
+]=]
+
+--[=[
+	@prop right ButtonControl
+	@within Composite2d
+]=]
 local Composite2d = {
-	_actionKind = ActionKind.Axis2d,
+	_valueKind = ValueKind.Vector2,
+	_isComposite = true,
 }
 Composite2d.__index = Composite2d
 
@@ -38,10 +59,10 @@ Composite2d.__index = Composite2d
 ]=]
 function Composite2d.new(options)
 	return setmetatable({
-		_up = options.up,
-		_down = options.down,
-		_left = options.left,
-		_right = options.right,
+		up = options.up,
+		down = options.down,
+		left = options.left,
+		right = options.right,
 	}, Composite2d)
 end
 

@@ -2,6 +2,13 @@ local UserInputService = game:GetService("UserInputService")
 
 local defaultActionValues = require(script.Parent.defaultActionValues)
 local Devices = require(script.Parent.Devices)
+local ValueKind = require(script.Parent.ValueKind)
+
+local defaultControlValues = {
+	[ValueKind.Boolean] = false,
+	[ValueKind.Number] = 0,
+	[ValueKind.Vector2] = Vector2.zero,
+}
 
 local function getActionValue(action, bindings)
 	if bindings == nil or #bindings == 0 then
@@ -10,12 +17,12 @@ local function getActionValue(action, bindings)
 
 	local highestActuation
 	local mostActuated
-	for _, control in ipairs(bindings) do
-		local actuation = control:_getActuation()
+	for _, binding in ipairs(bindings) do
+		local actuation = binding.control:_getActuation()
 
 		if mostActuated == nil or actuation > highestActuation then
 			highestActuation = actuation
-			mostActuated = control
+			mostActuated = binding.control
 		end
 	end
 
@@ -85,6 +92,7 @@ function InputState.new()
 	end
 
 	userInputService.InputBegan:Connect(onInputUpdated)
+	userInputService.InputEnded:Connect(onInputUpdated)
 	userInputService.InputChanged:Connect(onInputUpdated)
 
 	return setmetatable({
@@ -110,14 +118,12 @@ end
 function InputState:update()
 	for _, actions in ipairs(self._actions) do
 		for _, action in pairs(actions._actions) do
-			local bindings = if actions._bindings ~= nil then actions._bindings._bindings[action] else nil
-
-			updateAction(action, bindings)
+			updateAction(action, actions.bindings._bindings[action])
 		end
 	end
 
 	for _, control in ipairs(self._resetableControls) do
-		control._value = defaultActionValues[control._actionKind]
+		control._value = defaultControlValues[control._valueKind]
 		control._actuation = 0
 	end
 end

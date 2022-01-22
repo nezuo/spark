@@ -1,7 +1,7 @@
-local ActionKind = require(script.Parent.Parent.ActionKind)
+local ValueKind = require(script.Parent.Parent.ValueKind)
 
 local Axis2dControl = {
-	_actionKind = ActionKind.Axis2d,
+	_valueKind = ValueKind.Vector2,
 }
 Axis2dControl.__index = Axis2dControl
 

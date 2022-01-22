@@ -8,44 +8,47 @@ function MockUserInputService.new()
 		InputBegan = Signal.new(),
 		InputChanged = Signal.new(),
 		InputEnded = Signal.new(),
-		_inputObjects = {},
+		_buttonToInputObject = {},
 	}, MockUserInputService)
 end
 
-function MockUserInputService:_getOrCreateInputObject(keyCode, userInputType)
-	if self._inputObjects[keyCode] == nil then
-		self._inputObjects[keyCode] = {
-			Delta = Vector3.zero, -- Is this not zero if we move the mouse in the same frame?
-			KeyCode = keyCode,
-			Position = Vector3.zero, -- todo?
-			UserInputType = userInputType,
+function MockUserInputService:getButtonInputObject(button)
+	if self._buttonToInputObject[button] == nil then
+		local isKeyCode = button:IsA("KeyCode")
+
+		self._buttonToInputObject[button] = {
+			Delta = Vector3.zero,
+			Position = Vector3.zero,
+			KeyCode = if isKeyCode then button else Enum.KeyCode.Unknown,
+			UserInputState = Enum.UserInputState.Begin,
+			UserInputType = if isKeyCode then Enum.UserInputType.Keyboard else button,
 		}
 	end
 
-	return self._inputObjects[keyCode]
+	return self._buttonToInputObject[button]
 end
 
-function MockUserInputService:press(keyCode)
-	local inputObject = self:_getOrCreateInputObject(keyCode, Enum.UserInputType.Keyboard)
+function MockUserInputService:press(button)
+	local inputObject = self:getButtonInputObject(button)
 
 	inputObject.UserInputState = Enum.UserInputState.Begin
 
 	self.InputBegan:Fire(inputObject, false)
 end
 
-function MockUserInputService:release(keyCode)
-	local inputObject = self:_getOrCreateInputObject(keyCode, Enum.UserInputType.Keyboard)
+function MockUserInputService:release(button)
+	local inputObject = self:getButtonInputObject(button)
 
 	inputObject.UserInputState = Enum.UserInputState.End
 
-	self.InputBegan:Fire(inputObject, false)
+	self.InputEnded:Fire(inputObject, false)
 end
 
 function MockUserInputService:moveMouse(delta)
 	local inputObject = {
 		Delta = delta,
 		KeyCode = Enum.KeyCode.Unknown,
-		Position = Vector3.zero, -- todo?
+		Position = Vector3.zero,
 		UserInputType = Enum.UserInputType.MouseMovement,
 		UserInputState = Enum.UserInputState.Change,
 	}

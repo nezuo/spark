@@ -1,7 +1,7 @@
-local ActionKind = require(script.Parent.Parent.ActionKind)
+local ValueKind = require(script.Parent.Parent.ValueKind)
 
 local ButtonControl = {
-	_actionKind = ActionKind.Button,
+	_valueKind = ValueKind.Boolean,
 }
 ButtonControl.__index = ButtonControl
 

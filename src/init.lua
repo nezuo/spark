@@ -19,6 +19,11 @@
 
 --[=[
 	@within Spark
+	@prop Rebind Rebind
+]=]
+
+--[=[
+	@within Spark
 	@prop Devices Devices
 ]=]
 
@@ -35,7 +40,9 @@ return {
 	InputState = require(script.InputState),
 	Actions = require(script.Actions),
 	Bindings = require(script.Bindings),
+	Rebind = require(script.Rebind),
 	ActionKind = require(script.ActionKind),
+	ValueKind = require(script.ValueKind),
 	Devices = require(script.Devices),
 	Composite1d = require(script.Controls.Composite1d),
 	Composite2d = require(script.Controls.Composite2d),

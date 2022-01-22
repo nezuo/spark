@@ -1,17 +1,27 @@
 local Action = require(script.Parent.Action)
+local Bindings = require(script.Parent.Bindings)
 
 --[=[
 	Stores actions and a [Bindings](/api/Bindings).
 
 	@class Actions
 ]=]
+
+--[=[
+	@prop bindings Bindings
+	@within Actions
+]=]
 local Actions = {}
 Actions.__index = Actions
 
 function Actions.new()
-	return setmetatable({
+	local self = setmetatable({
 		_actions = {},
 	}, Actions)
+
+	self.bindings = Bindings.new(self)
+
+	return self
 end
 
 --[=[
@@ -32,15 +42,6 @@ function Actions:createAction(name, actionKind)
 	self._actions[name] = Action.new(actionKind)
 
 	return self
-end
-
---[=[
-	Sets the [Bindings](/api/Bindings) that is associated with the actions.
-
-	@param bindings Bindings
-]=]
-function Actions:setBindings(bindings)
-	self._bindings = bindings
 end
 
 --[=[
