@@ -125,21 +125,6 @@ return function()
 			local newBindings = Bindings.fromSerialized(actions, serialized)._bindings
 
 			assert(equalsDeep(oldBindings, newBindings))
-
-			-- for action, bindings in pairs(oldBindings) do
-			-- 	assert(#bindings == #newBindings[action], "Both bindings should have some number of controls")
-
-			-- 	for index, binding in pairs(bindings) do
-			-- 		print(binding)
-			-- 		local newBinding = newBindings[action][index]
-
-			-- 		assert(binding.control == newBinding.control, "Bindings' controls are not the same")
-			-- 	end
-			-- end
-
-			-- for action in pairs(newBindings) do
-			-- 	assert(oldBindings[action] ~= nil, "New bindings have an extra action")
-			-- end
 		end)
 	end)
 end
