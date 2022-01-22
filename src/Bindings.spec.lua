@@ -1,4 +1,7 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
 local Spark = require(script.Parent)
+local equalsDeep = require(ReplicatedStorage.equalsDeep)
 
 local ActionKind = Spark.ActionKind
 local Actions = Spark.Actions
@@ -28,7 +31,7 @@ return function()
 		)
 	end)
 
-	describe("Binding:bind", function()
+	describe("Bindings:bind", function()
 		it("should throw when the action doesn't exist", function()
 			expect(function()
 				Bindings.new(actions):bind("unknown", Keyboard.Space)
@@ -59,7 +62,7 @@ return function()
 		end)
 	end)
 
-	describe("Binding:filter", function()
+	describe("Bindings:filter", function()
 		it("should throw when the action doesn't exist", function()
 			expect(function()
 				actions.bindings:filter("unknown", function()
@@ -93,7 +96,7 @@ return function()
 		end)
 	end)
 
-	describe("Binding:forEachComposite", function()
+	describe("Bindings:forEachComposite", function()
 		it("should throw when the action doesn't exist", function()
 			expect(function()
 				actions.bindings:forEachComposite("unknown", function(composite)
@@ -110,6 +113,33 @@ return function()
 			context.press(Enum.KeyCode.F)
 			inputState:update()
 			expect(actions:get("axis1d"):get()).to.equal(1)
+		end)
+	end)
+
+	describe("Bindings:serialize", function()
+		-- TODO: This tests the internal implementation!
+		itFOCUS("should serialize and deserialize", function()
+			local serialized = actions.bindings:serialize()
+
+			local oldBindings = actions.bindings._bindings
+			local newBindings = Bindings.fromSerialized(actions, serialized)._bindings
+
+			assert(equalsDeep(oldBindings, newBindings))
+
+			-- for action, bindings in pairs(oldBindings) do
+			-- 	assert(#bindings == #newBindings[action], "Both bindings should have some number of controls")
+
+			-- 	for index, binding in pairs(bindings) do
+			-- 		print(binding)
+			-- 		local newBinding = newBindings[action][index]
+
+			-- 		assert(binding.control == newBinding.control, "Bindings' controls are not the same")
+			-- 	end
+			-- end
+
+			-- for action in pairs(newBindings) do
+			-- 	assert(oldBindings[action] ~= nil, "New bindings have an extra action")
+			-- end
 		end)
 	end)
 end

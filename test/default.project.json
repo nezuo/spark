@@ -19,6 +19,9 @@
       },
       "Signal": {
         "$path": "Signal.lua"
+      },
+      "equalsDeep": {
+        "$path": "equalsDeep.lua"
       }
     },
     "ServerScriptService": {

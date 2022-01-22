@@ -5,8 +5,9 @@ local Axis1dControl = {
 }
 Axis1dControl.__index = Axis1dControl
 
-function Axis1dControl.new(inputType, transform, doesReset)
+function Axis1dControl.new(path, inputType, transform, doesReset)
 	return setmetatable({
+		_path = path,
 		_inputType = inputType,
 		_transform = transform,
 		_doesReset = doesReset,

@@ -10,7 +10,7 @@ local Keyboard = {}
 local keyCodes = Enum.KeyCode:GetEnumItems()
 for index = 2, 140 do
 	local keyCode = keyCodes[index]
-	Keyboard[keyCode.Name] = ButtonControl.new(keyCode)
+	Keyboard[keyCode.Name] = ButtonControl.new("Keyboard." .. keyCode.Name, keyCode)
 end
 
 return Keyboard

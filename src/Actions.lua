@@ -39,7 +39,7 @@ end
 	@return Actions -- Returns itself
 ]=]
 function Actions:createAction(name, actionKind)
-	self._actions[name] = Action.new(actionKind)
+	self._actions[name] = Action.new(name, actionKind)
 
 	return self
 end

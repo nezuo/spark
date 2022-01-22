@@ -9,8 +9,9 @@ local Subject = require(script.Parent.Parent.Subject)
 local Action = {}
 Action.__index = Action
 
-function Action.new(actionKind)
+function Action.new(name, actionKind)
 	return setmetatable({
+		_name = name,
 		_actionKind = actionKind,
 		_value = defaultActionValues[actionKind],
 		_subject = Subject.new(),

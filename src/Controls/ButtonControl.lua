@@ -5,8 +5,9 @@ local ButtonControl = {
 }
 ButtonControl.__index = ButtonControl
 
-function ButtonControl.new(inputType)
+function ButtonControl.new(path, inputType)
 	return setmetatable({
+		_path = path,
 		_inputType = inputType,
 		_value = false,
 		_actuation = 0,
