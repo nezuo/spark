@@ -113,7 +113,7 @@ end
 --[=[
 	Updates all actions added to the InputState.
 
-	After updating the actions, it will also reset controls like Mouse.Delta (TODO LINK?).
+	After updating the actions, it will also reset controls like [Mouse.Delta](/api/Mouse#Delta).
 ]=]
 function InputState:update()
 	for _, actions in ipairs(self._actions) do

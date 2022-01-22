@@ -1,4 +1,7 @@
 local ActionKind = require(script.Parent.ActionKind)
+local Composite1d = require(script.Parent.Controls.Composite1d)
+local Composite2d = require(script.Parent.Controls.Composite2d)
+local Devices = require(script.Parent.Devices)
 local ValueKind = require(script.Parent.ValueKind)
 
 local actionKindToValueKind = {
@@ -6,6 +9,12 @@ local actionKindToValueKind = {
 	[ActionKind.Axis2d] = ValueKind.Vector2,
 	[ActionKind.Button] = ValueKind.Boolean,
 }
+
+local function pathToControl(path)
+	local parts = string.split(path, ".")
+
+	return Devices[parts[1]][parts[2]]
+end
 
 --[=[
 	@type Control ButtonControl | Axis1dControl | Axis2dControl | Composite1d | Composite2d
@@ -41,6 +50,45 @@ function Bindings.new(actions)
 		_actions = actions,
 		_bindings = {},
 	}, Bindings)
+end
+
+--[=[
+	Creates a new Bindings with the serialized bindings.
+
+	@param actions Actions
+	@param serialized {} -- Serialized bindings returned from [`Bindings:serialize`](/api/Bindings/serialize).
+	@return Bindings
+]=]
+function Bindings.fromSerialized(actions, serialized)
+	local self = setmetatable({
+		_actions = actions,
+		_bindings = {},
+	}, Bindings)
+
+	for name, bindings in pairs(serialized) do
+		for _, binding in ipairs(bindings) do
+			local control
+			if binding.isComposite1d then
+				control = Composite1d.new({
+					positive = pathToControl(binding.positive),
+					negative = pathToControl(binding.negative),
+				})
+			elseif binding.isComposite2d then
+				control = Composite2d.new({
+					up = pathToControl(binding.positive),
+					down = pathToControl(binding.down),
+					left = pathToControl(binding.left),
+					right = pathToControl(binding.right),
+				})
+			else
+				control = pathToControl(binding.control)
+			end
+
+			self:bind(name, control, binding.group)
+		end
+	end
+
+	return self
 end
 
 --[=[
@@ -134,6 +182,46 @@ function Bindings:forEachComposite(name, forEach)
 			forEach(binding.control, binding.group)
 		end
 	end
+end
+
+--[=[
+	Returns a serialized version of the bindings for saving.
+
+	@return {}
+]=]
+function Bindings:serialize()
+	local serialized = {}
+
+	for action, bindings in pairs(self._bindings) do
+		serialized[action._name] = {}
+
+		for _, binding in ipairs(bindings) do
+			if getmetatable(binding.control) == Composite1d then
+				table.insert(serialized[action._name], {
+					isComposite1d = true,
+					positive = binding.control.positive._path,
+					negative = binding.control.negative._path,
+					group = binding.group,
+				})
+			elseif getmetatable(binding.control) == Composite2d then
+				table.insert(serialized[action._name], {
+					isComposite1d = true,
+					up = binding.control.up._path,
+					down = binding.control.down._path,
+					left = binding.control.left._path,
+					right = binding.control.right._path,
+					group = binding.group,
+				})
+			else
+				table.insert(serialized[action._name], {
+					control = binding.control._path,
+					group = binding.group,
+				})
+			end
+		end
+	end
+
+	return serialized
 end
 
 function Bindings:_getAction(name)

@@ -31,13 +31,13 @@ local ButtonControl = require(script.Parent.Parent.Controls.ButtonControl)
 	@within Mouse
 ]=]
 return {
-	LeftButton = ButtonControl.new(Enum.UserInputType.MouseButton1),
-	RightButton = ButtonControl.new(Enum.UserInputType.MouseButton2),
-	MiddleButton = ButtonControl.new(Enum.UserInputType.MouseButton3),
-	ScrollWheel = Axis1dControl.new(Enum.UserInputType.MouseWheel, function(input)
+	LeftButton = ButtonControl.new("Mouse.LeftButton", Enum.UserInputType.MouseButton1),
+	RightButton = ButtonControl.new("Mouse.RightButton", Enum.UserInputType.MouseButton2),
+	MiddleButton = ButtonControl.new("Mouse.MiddleButton", Enum.UserInputType.MouseButton3),
+	ScrollWheel = Axis1dControl.new("Mouse.ScrollWheel", Enum.UserInputType.MouseWheel, function(input)
 		return input.Position.Z
 	end, true),
-	Delta = Axis2dControl.new(Enum.UserInputType.MouseMovement, function(input)
+	Delta = Axis2dControl.new("Mouse.Delta", Enum.UserInputType.MouseMovement, function(input)
 		return Vector2.new(input.Delta.X, input.Delta.Y)
 	end, true),
 }
