@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocs=self.webpackChunkdocs||[]).push([[696],{81505:function(e){e.exports=JSON.parse('{"functions":[],"properties":[],"types":[],"name":"Keyboard","desc":"Exports a ButtonControl for `KeyCode` 2 to 140. For example, `Keyboard.Space`.","source":{"line":8,"path":"src/Devices/Keyboard.lua"}}')}}]);

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocs=self.webpackChunkdocs||[]).push([[272],{97868:function(s){s.exports=JSON.parse('{"sourceUrl":"https://github.com/nezuo/spark/blob/master","baseUrl":"/spark/","classOrder":[],"apiCategories":[]}')}}]);
