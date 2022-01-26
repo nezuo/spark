@@ -93,8 +93,8 @@ function Composite2d:_getValue()
 	end
 end
 
-function Composite2d:_getActuation(value)
-	return value.Magnitude
+function Composite2d:_getActuation()
+	return self:_getValue().Magnitude
 end
 
 return Composite2d
