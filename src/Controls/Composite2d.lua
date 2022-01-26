@@ -71,7 +71,7 @@ function Composite2d:_getValue()
 	local y = 0
 
 	if self.up:_getValue() then
-		x += 1
+		y += 1
 	end
 
 	if self.down:_getValue() then
