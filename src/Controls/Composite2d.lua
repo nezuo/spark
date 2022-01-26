@@ -86,7 +86,7 @@ function Composite2d:_getValue()
 		x += 1
 	end
 
-	if x ~= 0 or y ~= nil then
+	if x ~= 0 or y ~= 0 then
 		return Vector2.new(x, y).Unit
 	else
 		return Vector2.zero
