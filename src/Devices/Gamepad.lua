@@ -113,8 +113,8 @@ return {
 	RightThumb = ButtonControl.new("Gamepad.RightThumb", Enum.KeyCode.ButtonR3),
 	LeftThumbstick = Axis2dControl.new("Gamepad.LeftThumbstick", Enum.KeyCode.Thumbstick1, function(input)
 		return Vector2.new(input.Position.X, input.Position.Y)
-	end, true), -- TODO: This and RightThumbstick aren't normalized... should they be?
+	end, false), -- TODO: This and RightThumbstick aren't normalized... should they be?
 	RightThumbstick = Axis2dControl.new("Gamepad.RightThumbstick", Enum.KeyCode.Thumbstick2, function(input)
 		return Vector2.new(input.Position.X, input.Position.Y)
-	end, true),
+	end, false),
 }
