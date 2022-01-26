@@ -27,11 +27,9 @@ end
 	Multiple controls can be mapped to the same action and each control can be mapped to multiple actions.
 
 	```lua
-	local bindings = Bindings.new(actions)
+	actions.bindings = Bindings.new(actions)
 		:bind("Jump", Keyboard.Space)
 		:bind("Look", Mouse.Delta)
-
-	actions:setBindings(bindings)
 	```
 
 	@class Bindings
