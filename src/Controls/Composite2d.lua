@@ -70,19 +70,19 @@ function Composite2d:_getValue()
 	local x = 0
 	local y = 0
 
-	if self.up:_getValue() then
+	if self.up ~= nil and self.up:_getValue() then
 		y += 1
 	end
 
-	if self.down:_getValue() then
+	if self.down ~= nil and self.down:_getValue() then
 		y -= 1
 	end
 
-	if self.left:_getValue() then
+	if self.left ~= nil and self.left:_getValue() then
 		x -= 1
 	end
 
-	if self.right:_getValue() then
+	if self.right ~= nil and self.right:_getValue() then
 		x += 1
 	end
 

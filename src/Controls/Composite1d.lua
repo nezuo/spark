@@ -53,11 +53,11 @@ end
 function Composite1d:_getValue()
 	local value = 0
 
-	if self.positive:_getValue() then
+	if self.positive ~= nil and self.positive:_getValue() then
 		value += 1
 	end
 
-	if self.negative:_getValue() then
+	if self.negative ~= nil and self.negative:_getValue() then
 		value -= 1
 	end
 
