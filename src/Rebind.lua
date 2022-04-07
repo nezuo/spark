@@ -23,7 +23,7 @@ local REQUIRED_ACTUATION = 0.2
 	```lua
 	local control = Rebind.new(ValueKind.Boolean)
 		:withDevices({ Devices.Keyboard })
-		:withoutControls(Devices.Keyboard.Space)
+		:withoutControls({ Devices.Keyboard.Space })
 		:start()
 		:expect()
 	```
