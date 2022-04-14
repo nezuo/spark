@@ -5,64 +5,54 @@ local Promise = require(script.Parent.Parent.Promise)
 local REQUIRED_ACTUATION = 0.2
 
 --[=[
-	@type Control ButtonControl | Axis1dControl | Axis2dControl | Composite1d | Composite2d
-	@within Rebind
-]=]
+	A Rebind is used for getting an input the user actuates.
 
---[=[
-	@type Device { [string]: Control }
-	@within Rebind
-]=]
-
---[=[
-	A Rebind is used for getting a control the user actuates.
-
-	You specify what devices you care about and can exclude controls. Then you call the [`Rebind:start`](/api/Rebind/start) method to get
-	a promise that resolves with the first control the user actuates.
+	You can create a query with specific devices and inputs and then call [`Rebind:start`](/api/Rebind/start) to get a promise that
+	resolves with the first input matching the query that the user actuates.
 
 	```lua
-	local control = Rebind.new(ValueKind.Boolean)
+	local input = Rebind.new(ValueKind.Boolean)
 		:withDevices({ Devices.Keyboard })
-		:withoutControls({ Devices.Keyboard.Space })
+		:withoutInputs({ Devices.Keyboard.Space })
 		:start()
 		:expect()
 	```
 
 	@class Rebind
 ]=]
-local Rebind = {} -- TODO: Come up with a better name.
+local Rebind = {}
 Rebind.__index = Rebind
 
 --[=[
 	Creates a new Rebind.
 
-	@param valueKind ValueKind -- Rebind returns controls that are `valueKind`.
+	@param valueKind ValueKind -- Rebind returns inputs that are `valueKind`.
 	@return Rebind
 ]=]
 function Rebind.new(valueKind)
 	return setmetatable({
 		_valueKind = valueKind,
-		_excludedControls = {},
+		_excludedInputs = {},
 		_devices = {},
 	}, Rebind)
 end
 
 --[=[
-	Excludes all `controls`.
+	Excludes all `inputs`.
 
-	@param controls { Control }
+	@param inputs { Input }
 	@return Rebind
 ]=]
-function Rebind:withoutControls(controls)
-	for _, control in ipairs(controls) do
-		self._excludedControls[control] = true
+function Rebind:withoutInputs(inputs)
+	for _, input in ipairs(inputs) do
+		self._excludedInputs[input] = true
 	end
 
 	return self
 end
 
 --[=[
-	Uses controls from the `devices`.
+	Uses inputs from the `devices`.
 
 	@param devices { Device }
 	@return Rebind
@@ -76,34 +66,34 @@ function Rebind:withDevices(devices)
 end
 
 --[=[
-	Returns a promise that resolves with a Control that matches the query.
+	Returns a promise that resolves with an [`Input`](/api/Input) that matches the query.
 
-	The promise will reject if there are no controls that match the query.
+	The promise will reject if there are no inputs that match the query.
 
 	@return Promise
 ]=]
 function Rebind:start()
-	local validControls = {}
+	local validInputs = {}
 
 	for device in pairs(self._devices) do
-		for _, control in pairs(device) do
-			if self._excludedControls[control] == nil and control._valueKind == self._valueKind then
-				table.insert(validControls, control)
+		for _, input in pairs(device) do
+			if self._excludedInputs[input] == nil and input._valueKind == self._valueKind then
+				table.insert(validInputs, input)
 			end
 		end
 	end
 
-	if #validControls == 0 then
-		return Promise.reject("There are no valid controls.")
+	if #validInputs == 0 then
+		return Promise.reject("There are no valid inputs.")
 	end
 
 	return Promise.new(function(resolve, _, onCancel)
 		local connection
 		connection = RunService.Heartbeat:Connect(function()
-			for _, control in ipairs(validControls) do
-				if control:_getActuation() >= REQUIRED_ACTUATION then
+			for _, input in ipairs(validInputs) do
+				if input:_getActuation() >= REQUIRED_ACTUATION then
 					connection:Disconnect()
-					resolve(control)
+					resolve(input)
 				end
 			end
 		end)

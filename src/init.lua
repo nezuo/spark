@@ -3,6 +3,16 @@
 ]=]
 
 --[=[
+	@type Input ButtonInput | Axis1dInput | Axis2dInput | Composite1d | Composite2d
+	@within Spark
+]=]
+
+--[=[
+	@type Device Keyboard | Mouse | Gamepad
+	@within Spark
+]=]
+
+--[=[
 	@within Spark
 	@prop InputState InputState
 ]=]
@@ -14,7 +24,7 @@
 
 --[=[
 	@within Spark
-	@prop Bindings Bindings
+	@prop InputMap InputMap
 ]=]
 
 --[=[
@@ -39,11 +49,11 @@
 return {
 	InputState = require(script.InputState),
 	Actions = require(script.Actions),
-	Bindings = require(script.Bindings),
+	InputMap = require(script.InputMap),
 	Rebind = require(script.Rebind),
 	ActionKind = require(script.ActionKind),
 	ValueKind = require(script.ValueKind),
 	Devices = require(script.Devices),
-	Composite1d = require(script.Controls.Composite1d),
-	Composite2d = require(script.Controls.Composite2d),
+	Composite1d = require(script.Inputs.Composite1d),
+	Composite2d = require(script.Inputs.Composite2d),
 }

@@ -4,26 +4,27 @@ local MockUserInputService = require(ReplicatedStorage.MockUserInputService)
 local Spark = require(script.Parent)
 
 local ActionKind = Spark.ActionKind
-local Bindings = Spark.Bindings
-local Devices = Spark.Devices
+local InputMap = Spark.InputMap
 local InputState = Spark.InputState
 local Actions = Spark.Actions
 local ValueKind = Spark.ValueKind
+local Composite1d = Spark.Composite1d
+local Keyboard = Spark.Devices.Keyboard
+local Mouse = Spark.Devices.Mouse
 
 return function()
-	local actions, defaultBindings, inputState, mockUserInputService, button, axis1d, axis2d
+	local actions, defaultInputMap, inputState, mockUserInputService, button, axis1d, axis2d
 	beforeEach(function(context)
-		-- TODO: I don't like that Devices/Controls are global state. Right now they global so that Composites can read them easily.
-		for _, device in pairs(Devices) do
-			for _, control in pairs(device) do
-				control._actuation = 0
+		for _, device in pairs(Spark.Devices) do
+			for _, input in pairs(device) do
+				input._actuation = 0
 
-				if control._valueKind == ValueKind.Boolean then
-					control._value = false
-				elseif control._valueKind == ValueKind.Number then
-					control._value = 0
-				elseif control._valueKind == ValueKind.Vector2 then
-					control._value = Vector2.zero
+				if input._valueKind == ValueKind.Boolean then
+					input._value = false
+				elseif input._valueKind == ValueKind.Number then
+					input._value = 0
+				elseif input._valueKind == ValueKind.Vector2 then
+					input._value = Vector2.zero
 				end
 			end
 		end
@@ -40,11 +41,10 @@ return function()
 		axis1d = actions:get("axis1d")
 		axis2d = actions:get("axis2d")
 
-		defaultBindings = Bindings.new(actions)
-			:bind("button", Devices.Keyboard.Space)
-			:bind("button", Devices.Keyboard.W)
-			:bind("axis1d", Devices.Mouse.ScrollWheel)
-			:bind("axis2d", Devices.Mouse.Delta)
+		defaultInputMap = InputMap.new()
+			:insertMultiple("button", { Keyboard.Space, Keyboard.W })
+			:insert("axis1d", Mouse.ScrollWheel)
+			:insert("axis2d", Mouse.Delta)
 
 		inputState = InputState.new()
 		inputState:addActions(actions)
@@ -83,9 +83,65 @@ return function()
 		expect(didNotify).to.equal(false)
 	end)
 
+	it("should throw when an input map contains an invalid action", function()
+		actions.inputMap:insert("unknown", Keyboard.Space)
+
+		expect(function()
+			inputState:update()
+		end).to.throw("InputMap contains invalid action called 'unknown'")
+	end)
+
+	it("should throw when using number input on a button action", function()
+		actions.inputMap:insert("button", Composite1d.new({ positive = Keyboard.E, negative = Keyboard.Q }))
+
+		expect(function()
+			inputState:update()
+		end).throw("Input of ValueKind.Number cannot be used with action 'button' of ActionKind.Button")
+	end)
+
+	it("should throw when using vector2 input on a button action", function()
+		actions.inputMap:insert("button", Mouse.Delta)
+
+		expect(function()
+			inputState:update()
+		end).throw("Input of ValueKind.Vector2 cannot be used with action 'button' of ActionKind.Button")
+	end)
+
+	it("should throw when using boolean input on a axis1d action", function()
+		actions.inputMap:insert("axis1d", Keyboard.Space)
+
+		expect(function()
+			inputState:update()
+		end).throw("Input of ValueKind.Boolean cannot be used with action 'axis1d' of ActionKind.Axis1d")
+	end)
+
+	it("should throw when using vector2 input on a axis1d action", function()
+		actions.inputMap:insert("axis1d", Mouse.Delta)
+
+		expect(function()
+			inputState:update()
+		end).throw("Input of ValueKind.Vector2 cannot be used with action 'axis1d' of ActionKind.Axis1d")
+	end)
+
+	it("should throw when using boolean input on a axis2d action", function()
+		actions.inputMap:insert("axis2d", Keyboard.Space)
+
+		expect(function()
+			inputState:update()
+		end).throw("Input of ValueKind.Boolean cannot be used with action 'axis2d' of ActionKind.Axis2d")
+	end)
+
+	it("should throw when using number input on a axis2d action", function()
+		actions.inputMap:insert("axis2d", Mouse.ScrollWheel)
+
+		expect(function()
+			inputState:update()
+		end).throw("Input of ValueKind.Number cannot be used with action 'axis2d' of ActionKind.Axis2d")
+	end)
+
 	describe("ActionKind.Button", function()
 		beforeEach(function()
-			actions.bindings = defaultBindings
+			actions.inputMap = defaultInputMap
 		end)
 
 		it("should update value", function(context)
@@ -130,7 +186,7 @@ return function()
 
 	describe("ActionKind.Axis1d", function()
 		beforeEach(function()
-			actions.bindings = defaultBindings
+			actions.inputMap = defaultInputMap
 		end)
 
 		it("should update value", function(context)
@@ -161,7 +217,7 @@ return function()
 
 	describe("ActionKind.Axis2d", function()
 		beforeEach(function()
-			actions.bindings = defaultBindings
+			actions.inputMap = defaultInputMap
 		end)
 
 		it("should update value", function(context)

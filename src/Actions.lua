@@ -1,14 +1,14 @@
 local Action = require(script.Parent.Action)
-local Bindings = require(script.Parent.Bindings)
+local InputMap = require(script.Parent.InputMap)
 
 --[=[
-	Stores actions and a [Bindings](/api/Bindings).
+	Stores actions and an [InputMap](/api/InputMap).
 
 	@class Actions
 ]=]
 
 --[=[
-	@prop bindings Bindings
+	@prop inputMap InputMap
 	@within Actions
 ]=]
 local Actions = {}
@@ -19,13 +19,13 @@ function Actions.new()
 		_actions = {},
 	}, Actions)
 
-	self.bindings = Bindings.new(self)
+	self.inputMap = InputMap.new()
 
 	return self
 end
 
 --[=[
-	Creates a new Action with the `actionKind` and returns itself.
+	Creates a new [`Action`](/api/Action) with the `actionKind` and returns itself.
 
 	```lua
 	Actions.new()
@@ -36,7 +36,7 @@ end
 
 	@param name string
 	@param actionKind ActionKind
-	@return Actions -- Returns itself
+	@return Actions -- Returns itself.
 ]=]
 function Actions:createAction(name, actionKind)
 	self._actions[name] = Action.new(name, actionKind)
