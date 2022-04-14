@@ -3,25 +3,25 @@ local ValueKind = require(script.Parent.Parent.ValueKind)
 --[=[
 	@interface Composite1dOptions
 	@within Composite1d
-	.positive ButtonControl
-	.negative ButtonControl
+	.positive ButtonInput?
+	.negative ButtonInput?
 ]=]
 
 --[=[
-	A Composite1d uses a positive and negative ButtonControl to mimic a Axis1dControl.
+	A Composite1d uses a positive and negative ButtonInput to mimic an Axis1dInput.
 
-	If both the positive and negative controls are pressed, the Composite1d will have a value of 0.
+	If both the positive and negative inputs are pressed, the Composite1d will have a value of 0.
 
 	@class Composite1d
 ]=]
 
 --[=[
-	@prop positive ButtonControl
+	@prop positive ButtonInput?
 	@within Composite1d
 ]=]
 
 --[=[
-	@prop negative ButtonControl
+	@prop negative ButtonInput?
 	@within Composite1d
 ]=]
 local Composite1d = {
@@ -45,8 +45,8 @@ Composite1d.__index = Composite1d
 ]=]
 function Composite1d.new(options)
 	return setmetatable({
-		positive = options.positive, -- TODO: document
-		negative = options.negative, -- TODO: document
+		positive = options.positive,
+		negative = options.negative,
 	}, Composite1d)
 end
 

@@ -2,7 +2,7 @@ local defaultActionValues = require(script.Parent.defaultActionValues)
 local Subject = require(script.Parent.Parent.Subject)
 
 --[=[
-	Actions have a semantic meaning like "Jump" and are designed to be seperate from the controls that update their value.
+	Actions have a semantic meaning like "Jump" and are designed to be independent from the inputs that update their value.
 
 	@class Action
 ]=]

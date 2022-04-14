@@ -3,37 +3,37 @@ local ValueKind = require(script.Parent.Parent.ValueKind)
 --[=[
 	@interface Composite2dOptions
 	@within Composite2d
-	.up ButtonControl
-	.down ButtonControl
-	.left ButtonControl
-	.right ButtonControl
+	.up ButtonInput?
+	.down ButtonInput?
+	.left ButtonInput?
+	.right ButtonInput?
 ]=]
 
 --[=[
-	A Composite2d uses a up, down, left, and right ButtonControl to mimic a Axis2dControl.
+	A Composite2d uses a up, down, left, and right ButtonInput to mimic an Axis2dInput.
 
-	The value of the Composite2d is normalized. If the up and down controls or the left and right controls are both pressed that axis will be 0.
+	The value of the Composite2d is normalized. If the up and down inputs or the left and right inputs are both pressed that axis will be 0.
 
 	@class Composite2d
 ]=]
 
 --[=[
-	@prop up ButtonControl
+	@prop up ButtonInput?
 	@within Composite2d
 ]=]
 
 --[=[
-	@prop down ButtonControl
+	@prop down ButtonInput?
 	@within Composite2d
 ]=]
 
 --[=[
-	@prop left ButtonControl
+	@prop left ButtonInput?
 	@within Composite2d
 ]=]
 
 --[=[
-	@prop right ButtonControl
+	@prop right ButtonInput?
 	@within Composite2d
 ]=]
 local Composite2d = {

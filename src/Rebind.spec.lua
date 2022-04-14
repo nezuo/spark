@@ -10,12 +10,12 @@ return function()
 	it("should return Keyboard.Space", function(context)
 		context.press(Enum.KeyCode.Space)
 
-		local control = Rebind.new(ValueKind.Boolean):withDevices({ Keyboard }):start():expect()
+		local input = Rebind.new(ValueKind.Boolean):withDevices({ Keyboard }):start():expect()
 
-		expect(control).to.equal(Keyboard.Space)
+		expect(input).to.equal(Keyboard.Space)
 	end)
 
-	it("should return control with correct ValueKind", function(context)
+	it("should return input with correct ValueKind", function(context)
 		local promise = Rebind.new(ValueKind.Vector2):withDevices({ Keyboard, Mouse }):start()
 
 		context.press(Enum.KeyCode.Space)
@@ -26,7 +26,7 @@ return function()
 		promise:expect()
 	end)
 
-	it("should only return a control from a specified device", function(context)
+	it("should only return a input from a specified device", function(context)
 		local promise = Rebind.new(ValueKind.Boolean):withDevices({ Mouse }):start()
 
 		context.press(Enum.KeyCode.Space)
@@ -37,10 +37,10 @@ return function()
 		promise:expect()
 	end)
 
-	it("should not return an excluded control", function(context)
+	it("should not return an excluded input", function(context)
 		local promise = Rebind.new(ValueKind.Boolean)
 			:withDevices({ Keyboard })
-			:withoutControls({ Keyboard.Space })
+			:withoutInputs({ Keyboard.Space })
 			:start()
 
 		context.press(Enum.KeyCode.Space)

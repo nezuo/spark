@@ -1,32 +1,33 @@
 local ValueKind = require(script.Parent.Parent.ValueKind)
 
-local Axis1dControl = {
+local Axis1dInput = {
 	_valueKind = ValueKind.Number,
 }
-Axis1dControl.__index = Axis1dControl
+Axis1dInput.__index = Axis1dInput
 
-function Axis1dControl.new(path, inputType, transform, doesReset)
+function Axis1dInput.new(device, path, inputType, transform, doesReset)
 	return setmetatable({
+		device = device,
 		_path = path,
 		_inputType = inputType,
 		_transform = transform,
 		_doesReset = doesReset,
 		_value = 0,
 		_actuation = 0,
-	}, Axis1dControl)
+	}, Axis1dInput)
 end
 
-function Axis1dControl:_update(input)
-	self._value = self._transform(input)
+function Axis1dInput:_update(inputObject)
+	self._value = self._transform(inputObject)
 	self._actuation = math.abs(self._value)
 end
 
-function Axis1dControl:_getValue()
+function Axis1dInput:_getValue()
 	return self._value
 end
 
-function Axis1dControl:_getActuation()
+function Axis1dInput:_getActuation()
 	return self._actuation
 end
 
-return Axis1dControl
+return Axis1dInput
