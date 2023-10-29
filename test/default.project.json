@@ -17,6 +17,9 @@
         },
         "$path": "../Packages"
       },
+      "DevPackages": {
+        "$path": "../DevPackages"
+      },
       "Signal": {
         "$path": "Signal.lua"
       },

@@ -4,23 +4,23 @@ registry = "test"
 
 [[package]]
 name = "evaera/promise"
-version = "3.2.1"
+version = "4.0.0"
 dependencies = []
 
 [[package]]
 name = "nezuo/enumerate"
-version = "0.1.5"
-dependencies = [["TestEZ", "roblox/testez@0.4.1"]]
+version = "0.1.6"
+dependencies = []
 
 [[package]]
 name = "nezuo/spark"
-version = "0.1.0"
-dependencies = [["Promise", "evaera/promise@3.2.1"], ["Subject", "nezuo/subject@0.1.0"], ["TestEZ", "roblox/testez@0.4.1"], ["enumerate", "nezuo/enumerate@0.1.5"]]
+version = "0.1.5"
+dependencies = [["Promise", "evaera/promise@4.0.0"], ["Subject", "nezuo/subject@0.2.0"], ["enumerate", "nezuo/enumerate@0.1.6"], ["TestEZ", "roblox/testez@0.4.1"]]
 
 [[package]]
 name = "nezuo/subject"
-version = "0.1.0"
-dependencies = [["TestEZ", "roblox/testez@0.4.1"]]
+version = "0.2.0"
+dependencies = [["Promise", "evaera/promise@4.0.0"]]
 
 [[package]]
 name = "roblox/testez"
