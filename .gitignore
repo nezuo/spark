@@ -1,12 +1,10 @@
-# Roblox model and place files
-/*.rbxm
-/*.rbxmx
-/*.rbxl
-/*.rbxlx
+*.rbxlx
+*.rbxl
 
-# Roblox Studio lock files
-/*.rbxlx.lock
-/*.rbxl.lock
+*.rbxlx.lock
+*.rbxl.lock
+
+/sourcemap.json
 
 # Wally
 /Packages

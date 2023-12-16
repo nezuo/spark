@@ -10,4 +10,4 @@ Promise = "evaera/promise@4.0.0"
 Subject = "nezuo/subject@0.2.0"
 
 [dev-dependencies]
-TestEZ = "roblox/testez@0.4.1"
+Midori = "nezuo/midori@0.1.3"
