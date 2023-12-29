@@ -16,6 +16,9 @@
       },
       "DevPackages": {
         "$path": "../DevPackages"
+      },
+      "MutableInputState": {
+        "$path": "MutableInputState.lua"
       }
     },
     "ServerScriptService": {

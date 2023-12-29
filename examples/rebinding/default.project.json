@@ -1,0 +1,23 @@
+{
+  "name": "rebinding",
+  "emitLegacyScripts": false,
+  "tree": {
+    "$className": "DataModel",
+    "Players": {
+      "$properties": {
+        "CharacterAutoLoads": false
+      }
+    },
+    "ReplicatedStorage": {
+      "Client": {
+        "$path": "src/client"
+      },
+      "Packages": {
+        "$path": "../../Packages",
+        "Spark": {
+          "$path": "../../"
+        }
+      }
+    }
+  }
+}
