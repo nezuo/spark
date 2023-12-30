@@ -17,6 +17,23 @@
         "Spark": {
           "$path": "../../"
         }
+      },
+      "Remotes": {
+        "$className": "Folder",
+        "Rebind": {
+          "$className": "RemoteEvent"
+        },
+        "ReplicateInputMap": {
+          "$className": "RemoteEvent"
+        }
+      },
+      "Shared": {
+        "$path": "src/shared"
+      }
+    },
+    "ServerScriptService": {
+      "Server": {
+        "$path": "src/server"
       }
     }
   }
