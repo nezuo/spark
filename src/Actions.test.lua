@@ -204,7 +204,6 @@ return function(x)
 		assertEqual(actions:clampedAxis2d("mouse"), Vector2.new(0.9, 0.8).Unit)
 	end)
 
-	-- TODO: Handle default gamepad?
 	x.test("gamepad buttons", function()
 		local actions = Actions.new({ "jump" })
 

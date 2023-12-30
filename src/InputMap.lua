@@ -64,6 +64,15 @@ local function deepCopy(original)
 end
 
 --[=[
+	If `associatedGamepad` is nil, the connected gamepad with the lowest number will be used.
+
+	The [Enum.UserInputType] must represent a gamepad.
+
+	@prop associatedGamepad Enum.UserInputType?
+	@within InputMap
+]=]
+
+--[=[
 	Maps actions to their inputs.
 
 	Multiple inputs can be mapped to the same action and each input can be mapped to multiple actions.

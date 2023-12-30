@@ -95,21 +95,19 @@ function InputState:pressed(input, gamepad)
 	if typeof(input) == "EnumItem" then
 		if input:IsA("KeyCode") then
 			if input == Enum.KeyCode.Thumbstick1 or input == Enum.KeyCode.Thumbstick2 then
-				if gamepad ~= nil then
-					local value = self.state.gamepadThumbsticks[input][gamepad]
+				if gamepad == nil then
+					return false
+				end
 
-					return if value == nil then false else value.Magnitude >= DEFAULT_DEADZONE
-				else
-					-- TODO: We should default to using all gamepads...
-					return false
-				end
+				local value = self.state.gamepadThumbsticks[input][gamepad]
+
+				return if value == nil then false else value.Magnitude >= DEFAULT_DEADZONE
 			elseif Inputs.GAMEPAD_BUTTONS[input] then
-				if gamepad ~= nil then
-					return self.state.gamepadButtons[input][gamepad] == true
-				else
-					-- TODO: We should default to using all gamepads...
+				if gamepad == nil then
 					return false
 				end
+
+				return self.state.gamepadButtons[input][gamepad] == true
 			else
 				return self.state.keycodes[input]
 			end
@@ -135,25 +133,23 @@ function InputState:value(input, gamepad)
 	if typeof(input) == "EnumItem" then
 		if input:IsA("KeyCode") then
 			if input == Enum.KeyCode.Thumbstick1 or input == Enum.KeyCode.Thumbstick2 then
-				if gamepad ~= nil then
-					local value = self.state.gamepadThumbsticks[input][gamepad]
-
-					if value == nil or value.Magnitude < DEFAULT_DEADZONE then
-						return 0
-					else
-						return value.Magnitude
-					end
-				else
-					-- TODO: We should default to using all gamepads...
+				if gamepad == nil then
 					return 0
+				end
+
+				local value = self.state.gamepadThumbsticks[input][gamepad]
+
+				if value == nil or value.Magnitude < DEFAULT_DEADZONE then
+					return 0
+				else
+					return value.Magnitude
 				end
 			elseif Inputs.GAMEPAD_BUTTONS[input] then
-				if gamepad ~= nil then
-					return if self.state.gamepadButtons[input][gamepad] then 1 else 0
-				else
-					-- TODO: We should default to using all gamepads...
+				if gamepad == nil then
 					return 0
 				end
+
+				return if self.state.gamepadButtons[input][gamepad] then 1 else 0
 			else
 				return if self.state.keycodes[input] then 1 else 0
 			end

@@ -1,3 +1,5 @@
+local UserInputService = game:GetService("UserInputService")
+
 local Signal = require(script.Parent.Signal)
 
 --[=[
@@ -61,11 +63,20 @@ end
 	@param inputMap InputMap -- The associated InputMap
 ]=]
 function Actions:update(inputState, inputMap)
+	local gamepad = inputMap.associatedGamepad
+	if gamepad == nil then
+		for _, candidateGamepad in UserInputService:GetConnectedGamepads() do
+			if gamepad == nil or candidateGamepad.Value < gamepad.Value then
+				gamepad = candidateGamepad
+			end
+		end
+	end
+
 	for action, state in self.state do
 		local inputs = inputMap:get(action)
 		local pressed = state.manualHolds > 0
 			or state.manualMove.Magnitude > 0
-			or inputState:anyPressed(inputs, inputMap.associatedGamepad)
+			or inputState:anyPressed(inputs, gamepad)
 
 		if pressed and not state.pressed then
 			self.justPressedSignals[action]:fire()
@@ -77,14 +88,14 @@ function Actions:update(inputState, inputMap)
 
 		local value = 0
 		for _, input in inputs do
-			value += inputState:value(input, inputMap.associatedGamepad)
+			value += inputState:value(input, gamepad)
 		end
 
 		state.value = value + state.manualMove.Magnitude + state.manualHolds
 
 		local axis2d = state.manualMove
 		for _, input in inputs do
-			local inputValue = inputState:axis2d(input, inputMap.associatedGamepad)
+			local inputValue = inputState:axis2d(input, gamepad)
 
 			if inputValue ~= nil then
 				axis2d += inputValue
