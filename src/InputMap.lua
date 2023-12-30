@@ -91,7 +91,7 @@ function InputMap.new()
 end
 
 --[=[
-	TODO
+	Deserializes the buffer returned from [InputMap:serialize] back into an InputMap.
 
 	@param serialized buffer
 	@return InputMap
@@ -219,9 +219,7 @@ function InputMap:clone()
 end
 
 --[=[
-	Returns a serialized version of the `InputMap` as a string. This can be used to save or replicate it.
-
-	TODO: Add warning about making sure the buffer is an appropriate size to save. Alternatively, maybe the rebinding should be done on the server.
+	Returns a serialized version of the `InputMap` as a buffer. This can be used to save or replicate it.
 
 	@return buffer
 ]=]
