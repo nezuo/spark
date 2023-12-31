@@ -8,9 +8,6 @@
       }
     },
     "ReplicatedStorage": {
-      "MockUserInputService": {
-        "$path": "MockUserInputService.lua"
-      },
       "Packages": {
         "Spark": {
           "$path": "../"
@@ -20,11 +17,8 @@
       "DevPackages": {
         "$path": "../DevPackages"
       },
-      "Signal": {
-        "$path": "Signal.lua"
-      },
-      "equalsDeep": {
-        "$path": "equalsDeep.lua"
+      "MutableInputState": {
+        "$path": "MutableInputState.lua"
       }
     },
     "ServerScriptService": {

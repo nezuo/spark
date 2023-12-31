@@ -1,21 +1,25 @@
-local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
 
+local getDeviceFromInput = require(script.Parent.getDeviceFromInput)
+local Inputs = require(script.Parent.Inputs)
 local Promise = require(script.Parent.Parent.Promise)
 
-local REQUIRED_ACTUATION = 0.2
+--[=[
+    @type Device "Keyboard" | "Mouse" | "Gamepad"
+    @within Rebind
+]=]
 
 --[=[
-	A Rebind is used for getting an input the user actuates.
-
-	You can create a query with specific devices and inputs and then call [`Rebind:start`](/api/Rebind/start) to get a promise that
-	resolves with the first input matching the query that the user actuates.
+	Queries for the first button a user presses. This is useful for rebinding based on user input.
 
 	```lua
-	local input = Rebind.new(ValueKind.Boolean)
-		:withDevices({ Devices.Keyboard })
-		:withoutInputs({ Devices.Keyboard.Space })
+	Rebind.new()
+		:withDevices({ "Keyboard", "Mouse" })
+		:withoutInputs({ Enum.KeyCode.Escape })
 		:start()
-		:expect()
+		:andThen(function(button)
+			print("User pressed", button)
+		end)
 	```
 
 	@class Rebind
@@ -24,78 +28,75 @@ local Rebind = {}
 Rebind.__index = Rebind
 
 --[=[
-	Creates a new Rebind.
+	Creates a new `Rebind`. To query for a button, call [Rebind:start].
 
-	@param valueKind ValueKind -- Rebind returns inputs that are `valueKind`.
 	@return Rebind
 ]=]
-function Rebind.new(valueKind)
+function Rebind.new()
 	return setmetatable({
-		_valueKind = valueKind,
-		_excludedInputs = {},
-		_devices = {},
+		devices = {},
+		excludedInputs = {},
 	}, Rebind)
 end
 
 --[=[
-	Excludes all `inputs`.
-
-	@param inputs { Input }
-	@return Rebind
-]=]
-function Rebind:withoutInputs(inputs)
-	for _, input in ipairs(inputs) do
-		self._excludedInputs[input] = true
-	end
-
-	return self
-end
-
---[=[
-	Uses inputs from the `devices`.
+	By default, inputs from all devices are included. When called, this method will only include the specified `devices`.
 
 	@param devices { Device }
-	@return Rebind
+	@return Rebind -- Returns self
 ]=]
 function Rebind:withDevices(devices)
-	for _, device in ipairs(devices) do
-		self._devices[device] = true
+	for _, device in devices do
+		self.devices[device] = true
 	end
 
 	return self
 end
 
 --[=[
-	Returns a promise that resolves with an [`Input`](/api/Input) that matches the query.
+	Excludes `inputs` from being chosen.
 
-	The promise will reject if there are no inputs that match the query.
+	@param inputs { Button }
+	@return Rebind -- Returns self
+]=]
+function Rebind:withoutInputs(inputs)
+	for _, input in inputs do
+		self.excludedInputs[input] = true
+	end
 
-	@return Promise
+	return self
+end
+
+--[=[
+	Returns a [Promise](https://eryn.io/roblox-lua-promise/api/Promise) that resolves with the first [Button] the user presses.
+
+	The promise can be cancelled if you no longer need the result.
+
+	@return Promise<Button>
 ]=]
 function Rebind:start()
-	local validInputs = {}
-
-	for device in pairs(self._devices) do
-		for _, input in pairs(device) do
-			if self._excludedInputs[input] == nil and input._valueKind == self._valueKind then
-				table.insert(validInputs, input)
-			end
-		end
-	end
-
-	if #validInputs == 0 then
-		return Promise.reject("There are no valid inputs.")
-	end
-
 	return Promise.new(function(resolve, _, onCancel)
 		local connection
-		connection = RunService.Heartbeat:Connect(function()
-			for _, input in ipairs(validInputs) do
-				if input:_getActuation() >= REQUIRED_ACTUATION then
-					connection:Disconnect()
-					resolve(input)
-				end
+		connection = UserInputService.InputBegan:Connect(function(inputObject)
+			local input = if inputObject.KeyCode == Enum.KeyCode.Unknown
+				then inputObject.UserInputType
+				else inputObject.KeyCode
+
+			-- The only UserInputType buttons are mouse buttons.
+			if input:IsA("UserInputType") and Inputs.MOUSE_BUTTONS[input] == nil then
+				return
 			end
+
+			if self.excludedInputs[input] then
+				return
+			end
+
+			if next(self.devices) and self.devices[getDeviceFromInput(input)] == nil then
+				return
+			end
+
+			resolve(input)
+			connection:Disconnect()
 		end)
 
 		onCancel(function()

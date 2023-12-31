@@ -1,0 +1,40 @@
+{
+  "name": "rebinding",
+  "emitLegacyScripts": false,
+  "tree": {
+    "$className": "DataModel",
+    "Players": {
+      "$properties": {
+        "CharacterAutoLoads": false
+      }
+    },
+    "ReplicatedStorage": {
+      "Client": {
+        "$path": "src/client"
+      },
+      "Packages": {
+        "$path": "../../Packages",
+        "Spark": {
+          "$path": "../../"
+        }
+      },
+      "Remotes": {
+        "$className": "Folder",
+        "Rebind": {
+          "$className": "RemoteEvent"
+        },
+        "ReplicateInputMap": {
+          "$className": "RemoteEvent"
+        }
+      },
+      "Shared": {
+        "$path": "src/shared"
+      }
+    },
+    "ServerScriptService": {
+      "Server": {
+        "$path": "src/server"
+      }
+    }
+  }
+}

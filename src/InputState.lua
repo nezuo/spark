@@ -1,79 +1,14 @@
 local UserInputService = game:GetService("UserInputService")
 
-local ActionKind = require(script.Parent.ActionKind)
-local defaultActionValues = require(script.Parent.defaultActionValues)
-local Devices = require(script.Parent.Devices)
-local ValueKind = require(script.Parent.ValueKind)
+local Inputs = require(script.Parent.Inputs)
 
-local defaultInputValues = {
-	[ValueKind.Boolean] = false,
-	[ValueKind.Number] = 0,
-	[ValueKind.Vector2] = Vector2.zero,
-}
-
-local actionKindToValueKind = {
-	[ActionKind.Axis1d] = ValueKind.Number,
-	[ActionKind.Axis2d] = ValueKind.Vector2,
-	[ActionKind.Button] = ValueKind.Boolean,
-}
-
-local function getActionValue(action, inputs)
-	if inputs == nil or #inputs == 0 then
-		return defaultActionValues[action._actionKind]
-	end
-
-	local highestActuation
-	local mostActuated
-	for _, input in pairs(inputs) do
-		local actuation = input:_getActuation()
-
-		if mostActuated == nil or actuation > highestActuation then
-			highestActuation = actuation
-			mostActuated = input
-		end
-	end
-
-	return mostActuated:_getValue()
-end
-
-local function updateAction(action, inputs)
-	local newValue = getActionValue(action, inputs)
-
-	if action:get() == newValue then
-		return
-	end
-
-	action._value = newValue
-	action._subject:notify(newValue)
-end
-
-local function validateInputMap(actions)
-	for name, inputs in pairs(actions.inputMap._map) do
-		local action = actions:get(name)
-
-		if action == nil then
-			error(string.format("InputMap contains invalid action called '%s'", name))
-		end
-
-		for _, input in ipairs(inputs) do
-			assert(
-				actionKindToValueKind[action._actionKind] == input._valueKind,
-				string.format(
-					"Input of %s cannot be used with action '%s' of %s",
-					tostring(input._valueKind),
-					name,
-					tostring(action._actionKind)
-				)
-			)
-		end
-	end
-end
+local DEFAULT_DEADZONE = 0.1
 
 --[=[
-	An InputState updates all inputs and actions.
+	Stores input state derived from [UserInputService] and is used to update [Actions].
 
-	:::warning
-	You should only create one InputState.
+	:::note
+	You should only ever create one `InputState`.
 	:::
 
 	@class InputState
@@ -82,87 +17,200 @@ local InputState = {}
 InputState.__index = InputState
 
 --[=[
-	Create a new InputState.
+	Creates a new `InputState`.
 
 	@return InputState
 ]=]
 function InputState.new()
-	local userInputService = if InputState._userInputService ~= nil
-		then InputState._userInputService
-		else UserInputService
-
-	local inputTypeToInputs = {}
-	local resetableInputs = {}
-	for _, device in pairs(Devices) do
-		for _, input in pairs(device) do
-			if inputTypeToInputs[input._inputType] == nil then
-				inputTypeToInputs[input._inputType] = {}
-			end
-
-			if input._doesReset then
-				table.insert(resetableInputs, input)
-			end
-
-			table.insert(inputTypeToInputs[input._inputType], input)
-		end
+	local gamepadButtons = {}
+	for keyCode in Inputs.GAMEPAD_BUTTONS do
+		gamepadButtons[keyCode] = {}
 	end
 
-	local function onInputUpdated(inputObject, gameProcessedEvent)
-		if gameProcessedEvent then
+	local state = {
+		keycodes = {},
+		mouseButtons = {},
+		mouseWheel = 0,
+		mouseDelta = Vector2.zero,
+		gamepadButtons = gamepadButtons,
+		gamepadThumbsticks = {
+			[Enum.KeyCode.Thumbstick1] = {},
+			[Enum.KeyCode.Thumbstick2] = {},
+		},
+	}
+
+	local function onInputBeganOrEnded(inputObject, sunk)
+		if sunk then
 			return
 		end
 
-		local inputType = if inputObject.KeyCode == Enum.KeyCode.Unknown
-			then inputObject.UserInputType
-			else inputObject.KeyCode
+		local keyCode = inputObject.KeyCode
 
-		if inputTypeToInputs[inputType] ~= nil then
-			for _, input in ipairs(inputTypeToInputs[inputType]) do
-				input:_update(inputObject)
-			end
+		if Inputs.MOUSE_BUTTONS[inputObject.UserInputType] then
+			state.mouseButtons[inputObject.UserInputType] = inputObject.UserInputState == Enum.UserInputState.Begin
+		elseif Inputs.GAMEPAD_BUTTONS[keyCode] then
+			local gamepad = inputObject.UserInputType
+
+			gamepadButtons[keyCode][gamepad] = inputObject.UserInputState == Enum.UserInputState.Begin
+		elseif keyCode ~= Enum.KeyCode.Unknown then
+			state.keycodes[keyCode] = inputObject.UserInputState == Enum.UserInputState.Begin
 		end
 	end
 
-	userInputService.InputBegan:Connect(onInputUpdated)
-	userInputService.InputEnded:Connect(onInputUpdated)
-	userInputService.InputChanged:Connect(onInputUpdated)
+	local function onInputChanged(inputObject, sunk)
+		if sunk then
+			return
+		end
+
+		if inputObject.UserInputType == Enum.UserInputType.MouseMovement then
+			state.mouseDelta = Vector2.new(inputObject.Delta.X, -inputObject.Delta.Y)
+		elseif inputObject.UserInputType == Enum.UserInputType.MouseWheel then
+			state.mouseWheel = inputObject.Position.Z
+		elseif inputObject.KeyCode == Enum.KeyCode.Thumbstick1 or inputObject.KeyCode == Enum.KeyCode.Thumbstick2 then
+			local gamepad = inputObject.UserInputType
+
+			state.gamepadThumbsticks[inputObject.KeyCode][gamepad] =
+				Vector2.new(inputObject.Position.X, inputObject.Position.Y)
+		end
+	end
+
+	UserInputService.InputBegan:Connect(onInputBeganOrEnded)
+	UserInputService.InputEnded:Connect(onInputBeganOrEnded)
+	UserInputService.InputChanged:Connect(onInputChanged)
 
 	return setmetatable({
-		_actions = {},
-		_resetableInputs = resetableInputs,
+		state = state,
 	}, InputState)
 end
 
 --[=[
-	Actions added to the InputState will be updated when [`InputState:update`](/api/InputState#update) is called.
-
-	@param actions Actions
+	This clears mouse wheel and mouse delta data so it doesn't persist across frames. This should be called once every frame after [Actions:update] is called.
 ]=]
-function InputState:addActions(actions)
-	table.insert(self._actions, actions)
+function InputState:clear()
+	self.state.mouseWheel = 0
+	self.state.mouseDelta = Vector2.zero
 end
 
---[=[
-	Updates all actions added to the InputState.
+function InputState:pressed(input, gamepad)
+	if typeof(input) == "EnumItem" then
+		if input:IsA("KeyCode") then
+			if input == Enum.KeyCode.Thumbstick1 or input == Enum.KeyCode.Thumbstick2 then
+				if gamepad == nil then
+					return false
+				end
 
-	After updating the actions, it will also reset inputs like [`Mouse.Delta`](/api/Mouse#Delta).
+				local value = self.state.gamepadThumbsticks[input][gamepad]
 
-	@error Invalid action in InputMap -- Throws when an Action's InputMap contains an invalid action
-	@error Invalid input in InputMap -- Throws when an Action's InputMap contains an input that does not match the corresponding action's ActionKind.
-]=]
-function InputState:update()
-	for _, actions in ipairs(self._actions) do
-		validateInputMap(actions)
+				return if value == nil then false else value.Magnitude >= DEFAULT_DEADZONE
+			elseif Inputs.GAMEPAD_BUTTONS[input] then
+				if gamepad == nil then
+					return false
+				end
 
-		for name, action in pairs(actions._actions) do
-			updateAction(action, actions.inputMap._map[name])
+				return self.state.gamepadButtons[input][gamepad] == true
+			else
+				return self.state.keycodes[input]
+			end
+		elseif Inputs.MOUSE_BUTTONS[input] then
+			return self.state.mouseButtons[input]
+		elseif input == Enum.UserInputType.MouseMovement then
+			return self.state.mouseDelta.Magnitude > 0
+		elseif input == Enum.UserInputType.MouseWheel then
+			return self.state.mouseWheel ~= 0
+		end
+	elseif input.kind == "VirtualAxis" then
+		return self:value(input, gamepad) ~= 0
+	elseif input.kind == "VirtualAxis2d" or input.kind == "Multiply2d" then
+		local value = self:axis2d(input, gamepad)
+
+		return if value == nil then false else value.Magnitude > 0
+	end
+
+	error("Invalid input")
+end
+
+function InputState:value(input, gamepad)
+	if typeof(input) == "EnumItem" then
+		if input:IsA("KeyCode") then
+			if input == Enum.KeyCode.Thumbstick1 or input == Enum.KeyCode.Thumbstick2 then
+				if gamepad == nil then
+					return 0
+				end
+
+				local value = self.state.gamepadThumbsticks[input][gamepad]
+
+				if value == nil or value.Magnitude < DEFAULT_DEADZONE then
+					return 0
+				else
+					return value.Magnitude
+				end
+			elseif Inputs.GAMEPAD_BUTTONS[input] then
+				if gamepad == nil then
+					return 0
+				end
+
+				return if self.state.gamepadButtons[input][gamepad] then 1 else 0
+			else
+				return if self.state.keycodes[input] then 1 else 0
+			end
+		elseif Inputs.MOUSE_BUTTONS[input] then
+			return if self.state.mouseButtons[input] then 1 else 0
+		elseif input == Enum.UserInputType.MouseMovement then
+			return self.state.mouseDelta.Magnitude
+		elseif input == Enum.UserInputType.MouseWheel then
+			return self.state.mouseWheel
+		end
+	elseif input.kind == "VirtualAxis" then
+		local positive = if input.positive then self:value(input.positive, gamepad) else 0
+		local negative = if input.negative then self:value(input.negative, gamepad) else 0
+
+		return positive - negative
+	elseif input.kind == "VirtualAxis2d" or input.kind == "Multiply2d" then
+		local value = self:axis2d(input, gamepad)
+
+		return if value == nil then 0 else value.Magnitude
+	end
+
+	error("Invalid input")
+end
+
+function InputState:axis2d(input, gamepad)
+	if input == Enum.UserInputType.MouseMovement then
+		return self.state.mouseDelta
+	elseif input == Enum.KeyCode.Thumbstick1 or input == Enum.KeyCode.Thumbstick2 then
+		local value = self.state.gamepadThumbsticks[input][gamepad]
+
+		if value ~= nil and value.Magnitude >= DEFAULT_DEADZONE then
+			return value
+		end
+	elseif typeof(input) == "table" then
+		if input.kind == "VirtualAxis2d" then
+			local right = if input.right then self:value(input.right, gamepad) else 0
+			local left = if input.left then self:value(input.left, gamepad) else 0
+			local up = if input.up then self:value(input.up, gamepad) else 0
+			local down = if input.down then self:value(input.down, gamepad) else 0
+
+			return Vector2.new(right - left, up - down)
+		elseif input.kind == "Multiply2d" then
+			local value = self:axis2d(input.input, gamepad)
+
+			if value ~= nil then
+				return value * input.multiplier
+			end
 		end
 	end
 
-	for _, input in ipairs(self._resetableInputs) do
-		input._value = defaultInputValues[input._valueKind]
-		input._actuation = 0
+	return nil
+end
+
+function InputState:anyPressed(inputs, gamepad)
+	for _, input in inputs do
+		if self:pressed(input, gamepad) then
+			return true
+		end
 	end
+
+	return false
 end
 
 return InputState

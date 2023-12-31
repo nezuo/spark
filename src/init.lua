@@ -1,59 +1,71 @@
 --[=[
-	@class Spark
+    @class Spark
 ]=]
 
 --[=[
-	@type Input ButtonInput | Axis1dInput | Axis2dInput | Composite1d | Composite2d
-	@within Spark
+    [Enum.UserInputType] must represent a button. Inputs like [Enum.UserInputType.MouseMovement] will not work as a button.
+
+    @type Button Enum.KeyCode | Enum.UserInputType
+    @within Spark
 ]=]
 
 --[=[
-	@type Device Keyboard | Mouse | Gamepad
-	@within Spark
+    [Enum.UserInputType] must represent a 2D value. Inputs like [Enum.UserInputType.MouseButton1] will not work as a 2D value.
+
+    @type Input2d Enum.UserInputType | VirtualAxis2d
+    @within Spark
 ]=]
 
 --[=[
-	@within Spark
-	@prop InputState InputState
+    @type Input Enum.KeyCode | Enum.UserInputType | VirtualAxis | VirtualAxis2d | Multiply2d
+    @within Spark
 ]=]
 
 --[=[
-	@within Spark
-	@prop Actions Actions
+    @prop Actions Actions
+    @within Spark
 ]=]
 
 --[=[
-	@within Spark
-	@prop InputMap InputMap
+    @prop InputMap InputMap
+    @within Spark
 ]=]
 
 --[=[
-	@within Spark
-	@prop Rebind Rebind
+    @prop InputState InputState
+    @within Spark
 ]=]
 
 --[=[
-	@within Spark
-	@prop Devices Devices
+    @prop Multiply2d Multiply2d
+    @within Spark
 ]=]
 
 --[=[
-	@within Spark
-	@prop Composite1d Composite1d
+    @prop Rebind Rebind
+    @within Spark
 ]=]
 
 --[=[
-	@within Spark
-	@prop Composite2d Composite2d
+    @prop Signal Signal
+    @within Spark
+]=]
+
+--[=[
+    @prop VirtualAxis VirtualAxis
+    @within Spark
+]=]
+
+--[=[
+    @prop VirtualAxis2d VirtualAxis2d
+    @within Spark
 ]=]
 return {
-	InputState = require(script.InputState),
 	Actions = require(script.Actions),
 	InputMap = require(script.InputMap),
+	InputState = require(script.InputState),
+	Multiply2d = require(script.Multiply2d),
 	Rebind = require(script.Rebind),
-	ActionKind = require(script.ActionKind),
-	ValueKind = require(script.ValueKind),
-	Devices = require(script.Devices),
-	Composite1d = require(script.Inputs.Composite1d),
-	Composite2d = require(script.Inputs.Composite2d),
+	VirtualAxis = require(script.VirtualAxis),
+	VirtualAxis2d = require(script.VirtualAxis2d),
 }

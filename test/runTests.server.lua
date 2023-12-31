@@ -1,5 +1,5 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local TestEZ = require(ReplicatedStorage.DevPackages.TestEZ)
+local Midori = require(ReplicatedStorage.DevPackages.Midori)
 
-TestEZ.TestBootstrap:run({ ReplicatedStorage.Packages.Spark })
+Midori.runTests(ReplicatedStorage.Packages.Spark)
