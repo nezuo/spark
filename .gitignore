@@ -10,5 +10,8 @@
 /Packages
 /DevPackages
 
+/examples/*/Packages
+/examples/*/wally.lock
+
 # Moonwave
 /build

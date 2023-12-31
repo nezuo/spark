@@ -1,0 +1,20 @@
+{
+  "name": "matter",
+  "emitLegacyScripts": false,
+  "tree": {
+    "$className": "DataModel",
+    "Players": {
+      "$properties": {
+        "CharacterAutoLoads": false
+      }
+    },
+    "ReplicatedStorage": {
+      "Client": {
+        "$path": "src/client"
+      },
+      "Packages": {
+        "$path": "Packages"
+      }
+    }
+  }
+}

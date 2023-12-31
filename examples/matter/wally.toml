@@ -1,0 +1,9 @@
+[package]
+name = "nezuo-spark/matter-example"
+version = "0.1.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dependencies]
+Matter = "evaera/matter@0.7.0"
+Spark = "nezuo/spark@0.2.0"
