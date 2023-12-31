@@ -2,7 +2,7 @@
 	An input that wraps an [Input2d] and multiplies its value by `multiplier`.
 
 	```lua
-	inputMap:insert("look", Multiply2d.new(Enum.KeyCode.MouseMovement, Vector2.new(0.5, 0.8)))
+	inputMap:insert("look", Multiply2d.new(Enum.UserInputType.MouseMovement, Vector2.new(0.5, 0.8)))
 	```
 
 	@class Multiply2d
