@@ -1,63 +1,205 @@
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="en" dir="ltr" class="plugin-moonwave plugin-id-moonwave">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="generator" content="Docusaurus v2.0.0-beta.9">
-<title data-react-helmet="true">Actions | spark</title><meta data-react-helmet="true" property="og:title" content="Actions | spark"><meta data-react-helmet="true" name="twitter:card" content="summary_large_image"><meta data-react-helmet="true" name="description" content="Stores actions and an [InputMap](/api/InputMap)."><meta data-react-helmet="true" property="og:description" content="Stores actions and an [InputMap](/api/InputMap)."><meta data-react-helmet="true" property="og:url" content="https://nezuo.github.io/spark/api/Actions"><meta data-react-helmet="true" name="docusaurus_locale" content="en"><meta data-react-helmet="true" name="docusaurus_tag" content="default"><link data-react-helmet="true" rel="canonical" href="https://nezuo.github.io/spark/api/Actions"><link data-react-helmet="true" rel="alternate" href="https://nezuo.github.io/spark/api/Actions" hreflang="en"><link data-react-helmet="true" rel="alternate" href="https://nezuo.github.io/spark/api/Actions" hreflang="x-default"><link rel="stylesheet" href="/spark/assets/css/styles.06f234af.css">
-<link rel="preload" href="/spark/assets/js/runtime~main.c1035ca6.js" as="script">
-<link rel="preload" href="/spark/assets/js/main.18bce79f.js" as="script">
+<meta name="generator" content="Docusaurus v2.3.1">
+<title data-rh="true">Actions | spark</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://nezuo.github.io/spark/api/Actions"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docusaurus_tag" content="default"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docsearch:docusaurus_tag" content="default"><meta data-rh="true" property="og:title" content="Actions | spark"><meta data-rh="true" name="description" content="Updates and reads action state.
+
+```lua
+local actions = Actions.new({ &quot;move&quot;, &quot;jump&quot; })
+
+local disconnect = actions:justPressedSignal(&quot;jump&quot;):connect(function()
+	print(&quot;Jumped!&quot;)
+end)
+
+local moveVector = actions:axis2d(&quot;move&quot;)
+```
+
+:::note
+[Actions:update] should be called every frame before calling [InputState:clear].
+:::"><meta data-rh="true" property="og:description" content="Updates and reads action state.
+
+```lua
+local actions = Actions.new({ &quot;move&quot;, &quot;jump&quot; })
+
+local disconnect = actions:justPressedSignal(&quot;jump&quot;):connect(function()
+	print(&quot;Jumped!&quot;)
+end)
+
+local moveVector = actions:axis2d(&quot;move&quot;)
+```
+
+:::note
+[Actions:update] should be called every frame before calling [InputState:clear].
+:::"><link data-rh="true" rel="canonical" href="https://nezuo.github.io/spark/api/Actions"><link data-rh="true" rel="alternate" href="https://nezuo.github.io/spark/api/Actions" hreflang="en"><link data-rh="true" rel="alternate" href="https://nezuo.github.io/spark/api/Actions" hreflang="x-default"><link rel="stylesheet" href="/spark/assets/css/styles.d68860a6.css">
+<link rel="preload" href="/spark/assets/js/runtime~main.86a26d35.js" as="script">
+<link rel="preload" href="/spark/assets/js/main.cc7b3efb.js" as="script">
 </head>
-<body>
+<body class="navigation-with-keyboard">
 <script>!function(){function e(e){document.documentElement.setAttribute("data-theme",e)}var t=function(){var e=null;try{e=localStorage.getItem("theme")}catch(e){}return e}();null!==t?e(t):window.matchMedia("(prefers-color-scheme: dark)").matches?e("dark"):(window.matchMedia("(prefers-color-scheme: light)").matches,e("light"))}()</script><div id="__docusaurus">
-<div><a href="#" class="skipToContent_1oUP">Skip to main content</a></div><nav class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="Navigation bar toggle" class="navbar__toggle clean-btn" type="button" tabindex="0"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/spark/"><b class="navbar__title">spark</b></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/spark/api/">API</a></div><div class="navbar__items navbar__items--right"><a href="https://github.com/nezuo/spark" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link"><span>GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_3J9K"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></span></a><div class="toggle_71bT toggle_3Zt9 toggleDisabled_3cF-"><div class="toggleTrack_32Fl" role="button" tabindex="-1"><div class="toggleTrackCheck_3lV7"><span class="toggleIcon_O4iE">🌜</span></div><div class="toggleTrackX_S2yS"><span class="toggleIcon_O4iE">🌞</span></div><div class="toggleTrackThumb_xI_Z"></div></div><input type="checkbox" class="toggleScreenReader_28Tw" aria-label="Switch between dark and light mode"></div><div class="navbar__search"><span aria-label="expand searchbar" role="button" class="search-icon" tabindex="0"></span><input type="search" id="search_input_react" placeholder="Press S to Search..." aria-label="Search" class="navbar__search-input search-bar"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div class="main-wrapper docPageContainer_2Kz0"><div class="docPage_1bdk"><div class="docSidebarContainer_1ykS"><div class="sidebar_15mo"><nav class="menu thin-scrollbar menu_Bmed"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/spark/api/Action">​Action</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" href="/spark/api/Actions">​Actions</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/spark/api/Composite1d">​Composite1d</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/spark/api/Composite2d">​Composite2d</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/spark/api/Devices">​Devices</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/spark/api/Gamepad">​Gamepad</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/spark/api/InputMap">​Input​Map</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/spark/api/InputState">​Input​State</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/spark/api/Keyboard">​Keyboard</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/spark/api/Mouse">​Mouse</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/spark/api/Rebind">​Rebind</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/spark/api/Spark">​Spark</a></li></ul></nav><button type="button" title="Collapse sidebar" aria-label="Collapse sidebar" class="button button--secondary button--outline collapseSidebarButton_1CGd"><svg width="20" height="20" aria-hidden="true" class="collapseSidebarButtonIcon_3E-R"><g fill="#7a7a7a"><path d="M9.992 10.023c0 .2-.062.399-.172.547l-4.996 7.492a.982.982 0 01-.828.454H1c-.55 0-1-.453-1-1 0-.2.059-.403.168-.551l4.629-6.942L.168 3.078A.939.939 0 010 2.528c0-.548.45-.997 1-.997h2.996c.352 0 .649.18.828.45L9.82 9.472c.11.148.172.347.172.55zm0 0"></path><path d="M19.98 10.023c0 .2-.058.399-.168.547l-4.996 7.492a.987.987 0 01-.828.454h-3c-.547 0-.996-.453-.996-1 0-.2.059-.403.168-.551l4.625-6.942-4.625-6.945a.939.939 0 01-.168-.55 1 1 0 01.996-.997h3c.348 0 .649.18.828.45l4.996 7.492c.11.148.168.347.168.55zm0 0"></path></g></svg></button></div></div><main class="docMainContainer_28N5"><div class="container padding-vert--lg"><div class="row"><div class="col docItemCol_3WPG"><div class="docItemContainer_3XDu"><article><div class="member_qHIL markdown"><div class="tocCollapsible_1PrD theme-doc-toc-mobile tocMobile_3ryM"><button type="button" class="clean-btn tocCollapsibleButton_2O1e">On this page</button></div><header><h1 class="docTitle_1ddc" style="text-decoration:none"><span style="display:inline-block">Actions</span></h1><div class="luaClassTags_2Zrs"></div><div>
-<p>Stores actions and an <a href="/spark/api/InputMap">InputMap</a>.</p>
-</div></header><h2 class="anchor anchorWithStickyNavbar_31ik" id="properties">Properties<a aria-hidden="true" class="hash-link" href="#properties" title="Direct link to heading">​</a></h2><div class="divider_3z1R"></div><h3 class="anchor anchorWithStickyNavbar_31ik" id="inputMap"><code style="text-decoration:none">inputMap</code><a aria-hidden="true" class="hash-link" href="#inputMap" title="Direct link to heading">​</a></h3><div class="repositoryDetailsContainer_1UH0"><a class="sourceButton_2aE5" href="https://github.com/nezuo/spark/blob/master/src/Actions.lua#L14"><div class="sourceButtonText_monK">&lt;/&gt;</div></a></div><div class="memberString_P8-X"><code>Actions<!-- -->.<!-- -->inputMap<!-- -->:<!-- --> </code> <code class="blue_2Afy"><a style="text-decoration:underline;color:inherit" href="/spark/api/InputMap">InputMap</a></code></div><div></div><h2 class="anchor anchorWithStickyNavbar_31ik" id="functions">Functions<a aria-hidden="true" class="hash-link" href="#functions" title="Direct link to heading">​</a></h2><div class="divider_3z1R"></div><h3 class="anchor anchorWithStickyNavbar_31ik" id="createAction"><code style="text-decoration:none">createAction</code><a aria-hidden="true" class="hash-link" href="#createAction" title="Direct link to heading">​</a></h3><div class="repositoryDetailsContainer_1UH0"><a class="sourceButton_2aE5" href="https://github.com/nezuo/spark/blob/master/src/Actions.lua#L41"><div class="sourceButtonText_monK">&lt;/&gt;</div></a></div><div class="memberString_P8-X"><code>Actions<!-- -->:</code><code class="green_3LnD">createAction</code><code>(</code><div class="inset_2cJr"><div><code>name<!-- -->: </code><code class="blue_2Afy">string</code><code>,</code></div><div><code>actionKind<!-- -->: </code><code class="blue_2Afy"><a style="text-decoration:underline;color:inherit" href="/spark/api/Spark#ActionKind">ActionKind</a></code></div></div><code>) → </code><code class="blue_2Afy"><a style="text-decoration:underline;color:inherit" href="/spark/api/Actions">Actions</a></code><span class="inlineDescription_17uy">-- <span>
-<p>Returns itself.</p>
-</span></span></div><div>
-<p>Creates a new <a href="/spark/api/Action"><code>Action</code></a> with the <code>actionKind</code> and returns itself.</p>
-<pre class="language-lua"><code class="language-lua">Actions<span class="token punctuation">.</span><span class="token function">new</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-	<span class="token punctuation">:</span><span class="token function">createAction</span><span class="token punctuation">(</span><span class="token string">"button"</span><span class="token punctuation">,</span> ActionKind<span class="token punctuation">.</span>Button<span class="token punctuation">)</span>
-	<span class="token punctuation">:</span><span class="token function">createAction</span><span class="token punctuation">(</span><span class="token string">"axis1d"</span><span class="token punctuation">,</span> ActionKind<span class="token punctuation">.</span>Axis1d<span class="token punctuation">)</span>
-	<span class="token punctuation">:</span><span class="token function">createAction</span><span class="token punctuation">(</span><span class="token string">"axis2d"</span><span class="token punctuation">,</span> ActionKind<span class="token punctuation">.</span>Axis2d<span class="token punctuation">)</span>
+<div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/spark/"><b class="navbar__title text--truncate">spark</b></a><a class="navbar__item navbar__link" href="/spark/docs/intro">Docs</a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/spark/api/">API</a></div><div class="navbar__items navbar__items--right"><a href="https://github.com/nezuo/spark" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="Switch between dark and light mode (currently light mode)" aria-label="Switch between dark and light mode (currently light mode)" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="searchBox_ZlJk"><div class="navbar__search"><span aria-label="expand searchbar" role="button" class="search-icon" tabindex="0"></span><input type="search" id="search_input_react" placeholder="Loading..." aria-label="Search" class="navbar__search-input search-bar" disabled=""></div></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0 docPageContainer_wNNk"><div class="docPage_Dpn1"><div class="docSidebarContainer_o_re"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" href="/spark/api/Actions">​Actions</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/spark/api/InputMap">​Input​Map</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/spark/api/InputState">​Input​State</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/spark/api/Multiply2d">​Multiply2d</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/spark/api/Rebind">​Rebind</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/spark/api/Signal">​Signal</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/spark/api/Spark">​Spark</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/spark/api/VirtualAxis">​Virtual​Axis</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/spark/api/VirtualAxis2d">​Virtual​Axis2d</a></li></ul></nav></div></div><main class="docMainContainer_HJE1"><div class="container padding-vert--lg"><div class="row"><div class="col docItemCol_MU3C"><div class="docItemContainer_Wv98"><article><div class="member_J0w1 markdown"><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_oUs_"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><header><h1 class="docTitle_mZRt" style="text-decoration:none"><span style="display:inline-block">Actions</span></h1><div class="luaClassTags_EipM"></div><div>
+<p>Updates and reads action state.</p>
+<pre class="language-lua"><code class="language-lua"><span class="token keyword">local</span> actions <span class="token operator">=</span> Actions<span class="token punctuation">.</span><span class="token function">new</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token string">"move"</span><span class="token punctuation">,</span> <span class="token string">"jump"</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+<span class="token keyword">local</span> disconnect <span class="token operator">=</span> actions<span class="token punctuation">:</span><span class="token function">justPressedSignal</span><span class="token punctuation">(</span><span class="token string">"jump"</span><span class="token punctuation">)</span><span class="token punctuation">:</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token function">print</span><span class="token punctuation">(</span><span class="token string">"Jumped!"</span><span class="token punctuation">)</span>
+<span class="token keyword">end</span><span class="token punctuation">)</span>
+
+<span class="token keyword">local</span> moveVector <span class="token operator">=</span> actions<span class="token punctuation">:</span><span class="token function">axis2d</span><span class="token punctuation">(</span><span class="token string">"move"</span><span class="token punctuation">)</span>
 </code></pre>
-</div><div class="divider_3z1R"></div><h3 class="anchor anchorWithStickyNavbar_31ik" id="get"><code style="text-decoration:none">get</code><a aria-hidden="true" class="hash-link" href="#get" title="Direct link to heading">​</a></h3><div class="repositoryDetailsContainer_1UH0"><a class="sourceButton_2aE5" href="https://github.com/nezuo/spark/blob/master/src/Actions.lua#L53"><div class="sourceButtonText_monK">&lt;/&gt;</div></a></div><div class="memberString_P8-X"><code>Actions<!-- -->:</code><code class="green_3LnD">get</code><code>(</code><code>name<!-- -->: </code><code class="blue_2Afy">string</code><code>) → </code><code class="blue_2Afy"><a style="text-decoration:underline;color:inherit" href="/spark/api/Action">Action?</a></code></div><div>
-<p>Returns the Action corresponding to the <code>name</code>.</p>
+<div class="admonition admonition-note alert alert--secondary">
+  <div class="admonition-heading">
+    <h5><span class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16">
+          <path d="M6.3 5.69a.942.942 0 0 1-.28-.7c0-.28.09-.52.28-.7.19-.18.42-.28.7-.28.28 0 .52.09.7.28.18.19.28.42.28.7 0 .28-.09.52-.28.7a1 1 0 0 1-.7.3c-.28 0-.52-.11-.7-.3zM8 7.99c-.02-.25-.11-.48-.31-.69-.2-.19-.42-.3-.69-.31H6c-.27.02-.48.13-.69.31-.2.2-.3.44-.31.69h1v3c.02.27.11.5.31.69.2.2.42.31.69.31h1c.27 0 .48-.11.69-.31.2-.19.3-.42.31-.69H8V7.98v.01zM7 2.3c-3.14 0-5.7 2.54-5.7 5.68 0 3.14 2.56 5.7 5.7 5.7s5.7-2.55 5.7-5.7c0-3.15-2.56-5.69-5.7-5.69v.01zM7 .98c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.12-7-7 3.14-7 7-7z"></path>
+        </svg></span>note</h5>
+  </div>
+  <div class="admonition-content">
+    <p><a href="/spark/api/Actions#update">Actions:update</a> should be called every frame before calling <a href="/spark/api/InputState#clear">InputState:clear</a>.</p>
+  </div>
+</div>
+</div></header><h2 class="anchor anchorWithStickyNavbar_LWe7" id="functions">Functions<a href="#functions" class="hash-link" aria-label="Direct link to Functions" title="Direct link to Functions">​</a></h2><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="new"><code style="text-decoration:none">new</code><a href="#new" class="hash-link" aria-label="Direct link to new" title="Direct link to new">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/nezuo/spark/blob/master/src/Actions.lua#L33"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Actions<!-- -->.</code><code class="green_DgR4">new</code><code>(</code><div class="inset_uKQm"><div><code>actions<!-- -->: </code><code class="purple_ieR2">{</code><code class="blue_P4bS">string</code><code class="purple_ieR2">}</code><span class="inlineDescription_G7Er">-- <span>
+<p>List of action names</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/spark/api/Actions">Actions</a></code></div><div>
+<p>Creates a new <code>Actions</code>.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="update"><code style="text-decoration:none">update</code><a href="#update" class="hash-link" aria-label="Direct link to update" title="Direct link to update">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/nezuo/spark/blob/master/src/Actions.lua#L65"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Actions<!-- -->:</code><code class="green_DgR4">update</code><code>(</code><div class="inset_uKQm"><div><code>inputState<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/spark/api/InputState">InputState</a></code><code>,</code></div><div><code>inputMap<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/spark/api/InputMap">InputMap</a></code><span class="inlineDescription_G7Er">-- <span>
+<p>The associated InputMap</p>
+</span></span></div></div><code>) → </code><code>(</code><code>)</code></div><div>
+<p>Updates action states.</p>
+<p>This should be called once every frame before calling <a href="/spark/api/InputState#clear">InputState:clear</a>.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="pressed"><code style="text-decoration:none">pressed</code><a href="#pressed" class="hash-link" aria-label="Direct link to pressed" title="Direct link to pressed">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/nezuo/spark/blob/master/src/Actions.lua#L117"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Actions<!-- -->:</code><code class="green_DgR4">pressed</code><code>(</code><code>action<!-- -->: </code><code class="blue_P4bS">string</code><code>) → </code><code class="blue_P4bS">boolean</code></div><div>
+<p>Returns whether <code>action</code> is currently pressed.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="released"><code style="text-decoration:none">released</code><a href="#released" class="hash-link" aria-label="Direct link to released" title="Direct link to released">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/nezuo/spark/blob/master/src/Actions.lua#L127"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Actions<!-- -->:</code><code class="green_DgR4">released</code><code>(</code><code>action<!-- -->: </code><code class="blue_P4bS">string</code><code>) → </code><code class="blue_P4bS">boolean</code></div><div>
+<p>Returns whether <code>action</code> is currently released.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="justPressedSignal"><code style="text-decoration:none">justPressedSignal</code><a href="#justPressedSignal" class="hash-link" aria-label="Direct link to justPressedSignal" title="Direct link to justPressedSignal">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/nezuo/spark/blob/master/src/Actions.lua#L145"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Actions<!-- -->:</code><code class="green_DgR4">justPressedSignal</code><code>(</code><code>action<!-- -->: </code><code class="blue_P4bS">string</code><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/spark/api/Signal">Signal</a></code></div><div>
+<p>Returns a <a href="/spark/api/Signal">Signal</a> that is fired when <code>action</code> is pressed.</p>
+<pre class="language-lua"><code class="language-lua"><span class="token keyword">local</span> disconnect <span class="token operator">=</span> actions<span class="token punctuation">:</span><span class="token function">justPressedSignal</span><span class="token punctuation">(</span><span class="token string">"jump"</span><span class="token punctuation">)</span><span class="token punctuation">:</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token function">print</span><span class="token punctuation">(</span><span class="token string">"Jump pressed!"</span><span class="token punctuation">)</span>
+<span class="token keyword">end</span><span class="token punctuation">)</span>
+
+<span class="token function">disconnect</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="justReleasedSignal"><code style="text-decoration:none">justReleasedSignal</code><a href="#justReleasedSignal" class="hash-link" aria-label="Direct link to justReleasedSignal" title="Direct link to justReleasedSignal">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/nezuo/spark/blob/master/src/Actions.lua#L163"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Actions<!-- -->:</code><code class="green_DgR4">justReleasedSignal</code><code>(</code><code>action<!-- -->: </code><code class="blue_P4bS">string</code><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/spark/api/Signal">Signal</a></code></div><div>
+<p>Returns a <a href="/spark/api/Signal">Signal</a> that is fired when <code>action</code> is released.</p>
+<pre class="language-lua"><code class="language-lua"><span class="token keyword">local</span> disconnect <span class="token operator">=</span> actions<span class="token punctuation">:</span><span class="token function">justReleasedSignal</span><span class="token punctuation">(</span><span class="token string">"jump"</span><span class="token punctuation">)</span><span class="token punctuation">:</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token function">print</span><span class="token punctuation">(</span><span class="token string">"Jump released!"</span><span class="token punctuation">)</span>
+<span class="token keyword">end</span><span class="token punctuation">)</span>
+
+<span class="token function">disconnect</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="value"><code style="text-decoration:none">value</code><a href="#value" class="hash-link" aria-label="Direct link to value" title="Direct link to value">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/nezuo/spark/blob/master/src/Actions.lua#L183"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Actions<!-- -->:</code><code class="green_DgR4">value</code><code>(</code><code>action<!-- -->: </code><code class="blue_P4bS">string</code><code>) → </code><code class="blue_P4bS">number</code></div><div>
+<p>Returns the sum of the values of each input bound to <code>action</code>.</p>
+<p>The value of an input depends on its kind:</p>
+<ul>
+  <li>Buttons have a value of <code>0</code> when released and <code>1</code> when pressed.</li>
+  <li><a href="https://developer.roblox.com/en-us/api-reference/datatype/Enum#UserInputType.MouseWheel" target="_blank">Enum.UserInputType.MouseWheel</a> returns the <code>Z</code> value of <a href="https://developer.roblox.com/en-us/api-reference/class/InputObject#Position" target="_blank">InputObject.Position</a>.</li>
+  <li><a href="/spark/api/VirtualAxis">VirtualAxis</a> returns the value of the positive input minus the value of the negative input.</li>
+  <li>2D axis values like <a href="https://developer.roblox.com/en-us/api-reference/datatype/Enum#UserInputType.MouseMovement" target="_blank">Enum.UserInputType.MouseMovement</a>, <a href="https://developer.roblox.com/en-us/api-reference/datatype/Enum#KeyCode.Thumbstick1" target="_blank">Enum.KeyCode.Thumbstick1</a>, or [VirutalAxis2d] will return their magnitude.</li>
+</ul>
+<div class="admonition admonition-warning alert alert--danger">
+  <div class="admonition-heading">
+    <h5><span class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 12 16">
+          <path d="M5.05.31c.81 2.17.41 3.38-.52 4.31C3.55 5.67 1.98 6.45.9 7.98c-1.45 2.05-1.7 6.53 3.53 7.7-2.2-1.16-2.67-4.52-.3-6.61-.61 2.03.53 3.33 1.94 2.86 1.39-.47 2.3.53 2.27 1.67-.02.78-.31 1.44-1.13 1.81 3.42-.59 4.78-3.42 4.78-5.56 0-2.84-2.53-3.22-1.25-5.61-1.52.13-2.03 1.13-1.89 2.75.09 1.08-1.02 1.8-1.86 1.33-.67-.41-.66-1.19-.06-1.78C8.18 5.31 8.68 2.45 5.05.32L5.03.3l.02.01z"></path>
+        </svg></span>warning</h5>
+  </div>
+  <div class="admonition-content">
+    <p>The return value is not clamped to any range.</p>
+  </div>
+</div>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="axis2d"><code style="text-decoration:none">axis2d</code><a href="#axis2d" class="hash-link" aria-label="Direct link to axis2d" title="Direct link to axis2d">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/nezuo/spark/blob/master/src/Actions.lua#L203"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Actions<!-- -->:</code><code class="green_DgR4">axis2d</code><code>(</code><code>action<!-- -->: </code><code class="blue_P4bS">string</code><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector2" target="_blank" rel="noopener noreferrer">Vector2<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code></div><div>
+<p>Returns the sum of <code>Vector2</code> values of each input bound to <code>action</code>.</p>
+<p>The value of an input depends on its kind:</p>
+<ul>
+  <li>Buttons and 1D axis values like <a href="https://developer.roblox.com/en-us/api-reference/datatype/Enum#UserInputType.MouseWheel" target="_blank">Enum.UserInputType.MouseWheel</a> or <a href="/spark/api/VirtualAxis">VirtualAxis</a> will always return <a href="https://developer.roblox.com/en-us/api-reference/datatype/Vector2#zero" target="_blank">Vector2.zero</a>.</li>
+  <li><a href="https://developer.roblox.com/en-us/api-reference/datatype/Enum#KeyCode.Thumbstick1" target="_blank">Enum.KeyCode.Thumbstick1</a> and <a href="https://developer.roblox.com/en-us/api-reference/datatype/Enum#KeyCode.Thumbstick2" target="_blank">Enum.KeyCode.Thumbstick2</a> returns the <code>(X, Y)</code> value of <a href="https://developer.roblox.com/en-us/api-reference/class/InputObject#Position" target="_blank">InputObject.Position</a>.</li>
+  <li><a href="https://developer.roblox.com/en-us/api-reference/datatype/Enum#UserInputType.MouseMovement" target="_blank">Enum.UserInputType.MouseMovement</a> returns the <code>(X, -Y)</code> value of <a href="https://developer.roblox.com/en-us/api-reference/class/InputObject#Delta" target="_blank">InputObject.Delta</a>.</li>
+  <li><a href="/spark/api/VirtualAxis2d">VirtualAxis2d</a> returns <code>Vector2.new(rightValue - leftValue, upValue - downValue)</code>.</li>
+</ul>
+<div class="admonition admonition-warning alert alert--danger">
+  <div class="admonition-heading">
+    <h5><span class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 12 16">
+          <path d="M5.05.31c.81 2.17.41 3.38-.52 4.31C3.55 5.67 1.98 6.45.9 7.98c-1.45 2.05-1.7 6.53 3.53 7.7-2.2-1.16-2.67-4.52-.3-6.61-.61 2.03.53 3.33 1.94 2.86 1.39-.47 2.3.53 2.27 1.67-.02.78-.31 1.44-1.13 1.81 3.42-.59 4.78-3.42 4.78-5.56 0-2.84-2.53-3.22-1.25-5.61-1.52.13-2.03 1.13-1.89 2.75.09 1.08-1.02 1.8-1.86 1.33-.67-.41-.66-1.19-.06-1.78C8.18 5.31 8.68 2.45 5.05.32L5.03.3l.02.01z"></path>
+        </svg></span>warning</h5>
+  </div>
+  <div class="admonition-content">
+    <p>The returned Vector2 is not clamped to any range. Consider using <a href="/spark/api/Actions#normalizedAxis2d">Actions:normalizedAxis2d</a> or <a href="/spark/api/Actions#clampedAxis2d">Actions:clampedAxis2d</a>.</p>
+  </div>
+</div>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="normalizedAxis2d"><code style="text-decoration:none">normalizedAxis2d</code><a href="#normalizedAxis2d" class="hash-link" aria-label="Direct link to normalizedAxis2d" title="Direct link to normalizedAxis2d">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/nezuo/spark/blob/master/src/Actions.lua#L213"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Actions<!-- -->:</code><code class="green_DgR4">normalizedAxis2d</code><code>(</code><code>action<!-- -->: </code><code class="blue_P4bS">string</code><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector2" target="_blank" rel="noopener noreferrer">Vector2<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code></div><div>
+<p>Returns the <a href="/spark/api/Actions#axis2d">Actions:axis2d</a> value but normalized. If the value is <code>Vector2.zero</code>, <code>Vector2.zero</code> will be returned.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="clampedAxis2d"><code style="text-decoration:none">clampedAxis2d</code><a href="#clampedAxis2d" class="hash-link" aria-label="Direct link to clampedAxis2d" title="Direct link to clampedAxis2d">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/nezuo/spark/blob/master/src/Actions.lua#L229"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Actions<!-- -->:</code><code class="green_DgR4">clampedAxis2d</code><code>(</code><code>action<!-- -->: </code><code class="blue_P4bS">string</code><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector2" target="_blank" rel="noopener noreferrer">Vector2<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code></div><div>
+<p>Returns the <a href="/spark/api/Actions#axis2d">Actions:axis2d</a> value but with the length clamped to <code>1</code>. This allows for <code>Vector2s</code> with a length less than <code>1</code> which is useful for gamepad and mobile thumbsticks.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="hold"><code style="text-decoration:none">hold</code><a href="#hold" class="hash-link" aria-label="Direct link to hold" title="Direct link to hold">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/nezuo/spark/blob/master/src/Actions.lua#L253"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Actions<!-- -->:</code><code class="green_DgR4">hold</code><code>(</code><code>action<!-- -->: </code><code class="blue_P4bS">string</code><code>) → </code><code class="purple_ieR2">(</code><code class="purple_ieR2">)</code><code class="purple_ieR2"> → </code><code class="purple_ieR2">(</code><code class="purple_ieR2">)</code><span class="inlineDescription_G7Er">-- <span>
+<p>A function that when called, stops the hold.</p>
+</span></span></div><div>
+<p>Presses <code>action</code> manually like a button. It returns a function to cancel the hold.</p>
+<p>This can be called more than once at the same time and each call will represent a different button press.</p>
+<p>This is useful to implement mobile buttons.</p>
+<div class="admonition admonition-warning alert alert--danger">
+  <div class="admonition-heading">
+    <h5><span class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 12 16">
+          <path d="M5.05.31c.81 2.17.41 3.38-.52 4.31C3.55 5.67 1.98 6.45.9 7.98c-1.45 2.05-1.7 6.53 3.53 7.7-2.2-1.16-2.67-4.52-.3-6.61-.61 2.03.53 3.33 1.94 2.86 1.39-.47 2.3.53 2.27 1.67-.02.78-.31 1.44-1.13 1.81 3.42-.59 4.78-3.42 4.78-5.56 0-2.84-2.53-3.22-1.25-5.61-1.52.13-2.03 1.13-1.89 2.75.09 1.08-1.02 1.8-1.86 1.33-.67-.41-.66-1.19-.06-1.78C8.18 5.31 8.68 2.45 5.05.32L5.03.3l.02.01z"></path>
+        </svg></span>warning</h5>
+  </div>
+  <div class="admonition-content">
+    <p>The returned function will error if called more than once.</p>
+  </div>
+</div>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="move"><code style="text-decoration:none">move</code><a href="#move" class="hash-link" aria-label="Direct link to move" title="Direct link to move">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/nezuo/spark/blob/master/src/Actions.lua#L281"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Actions<!-- -->:</code><code class="green_DgR4">move</code><code>(</code><div class="inset_uKQm"><div><code>action<!-- -->: </code><code class="blue_P4bS">string</code><code>,</code></div><div><code>vector<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector2" target="_blank" rel="noopener noreferrer">Vector2<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code></div></div><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector2" target="_blank" rel="noopener noreferrer">Vector2<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code></div><div>
+<p>Increases the axis2d value of <code>action</code> by <code>vector</code>.</p>
+<p>This value resets after <a href="/spark/api/Actions#update">Actions:update</a> is called.</p>
+<p>This is useful to implement a mobile thumbstick.</p>
 </div></div></article></div><details><summary>Show raw api</summary><pre style="max-width:100%;white-space:pre-wrap">{
     &quot;functions&quot;: [
         {
-            &quot;name&quot;: &quot;createAction&quot;,
-            &quot;desc&quot;: &quot;Creates a new [`Action`](/api/Action) with the `actionKind` and returns itself.\n\n```lua\nActions.new()\n\t:createAction(\&quot;button\&quot;, ActionKind.Button)\n\t:createAction(\&quot;axis1d\&quot;, ActionKind.Axis1d)\n\t:createAction(\&quot;axis2d\&quot;, ActionKind.Axis2d)\n```&quot;,
+            &quot;name&quot;: &quot;new&quot;,
+            &quot;desc&quot;: &quot;Creates a new `Actions`.&quot;,
             &quot;params&quot;: [
                 {
-                    &quot;name&quot;: &quot;name&quot;,
-                    &quot;desc&quot;: &quot;&quot;,
-                    &quot;lua_type&quot;: &quot;string&quot;
-                },
-                {
-                    &quot;name&quot;: &quot;actionKind&quot;,
-                    &quot;desc&quot;: &quot;&quot;,
-                    &quot;lua_type&quot;: &quot;ActionKind&quot;
+                    &quot;name&quot;: &quot;actions&quot;,
+                    &quot;desc&quot;: &quot;List of action names&quot;,
+                    &quot;lua_type&quot;: &quot;{ string }&quot;
                 }
             ],
             &quot;returns&quot;: [
                 {
-                    &quot;desc&quot;: &quot;Returns itself.&quot;,
+                    &quot;desc&quot;: &quot;&quot;,
                     &quot;lua_type&quot;: &quot;Actions&quot;
                 }
             ],
-            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;function_type&quot;: &quot;static&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 41,
+                &quot;line&quot;: 33,
                 &quot;path&quot;: &quot;src/Actions.lua&quot;
             }
         },
         {
-            &quot;name&quot;: &quot;get&quot;,
-            &quot;desc&quot;: &quot;Returns the Action corresponding to the `name`.&quot;,
+            &quot;name&quot;: &quot;update&quot;,
+            &quot;desc&quot;: &quot;Updates action states.\n\nThis should be called once every frame before calling [InputState:clear].&quot;,
             &quot;params&quot;: [
                 {
-                    &quot;name&quot;: &quot;name&quot;,
+                    &quot;name&quot;: &quot;inputState&quot;,
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;InputState&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;inputMap&quot;,
+                    &quot;desc&quot;: &quot;The associated InputMap&quot;,
+                    &quot;lua_type&quot;: &quot;InputMap&quot;
+                }
+            ],
+            &quot;returns&quot;: [],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 65,
+                &quot;path&quot;: &quot;src/Actions.lua&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;pressed&quot;,
+            &quot;desc&quot;: &quot;Returns whether `action` is currently pressed.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;action&quot;,
                     &quot;desc&quot;: &quot;&quot;,
                     &quot;lua_type&quot;: &quot;string&quot;
                 }
@@ -65,36 +207,229 @@
             &quot;returns&quot;: [
                 {
                     &quot;desc&quot;: &quot;&quot;,
-                    &quot;lua_type&quot;: &quot;Action?&quot;
+                    &quot;lua_type&quot;: &quot;boolean&quot;
                 }
             ],
             &quot;function_type&quot;: &quot;method&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 53,
+                &quot;line&quot;: 117,
                 &quot;path&quot;: &quot;src/Actions.lua&quot;
             }
-        }
-    ],
-    &quot;properties&quot;: [
+        },
         {
-            &quot;name&quot;: &quot;inputMap&quot;,
-            &quot;desc&quot;: &quot;&quot;,
-            &quot;lua_type&quot;: &quot;InputMap&quot;,
+            &quot;name&quot;: &quot;released&quot;,
+            &quot;desc&quot;: &quot;Returns whether `action` is currently released.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;action&quot;,
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;boolean&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 14,
+                &quot;line&quot;: 127,
+                &quot;path&quot;: &quot;src/Actions.lua&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;justPressedSignal&quot;,
+            &quot;desc&quot;: &quot;Returns a [Signal] that is fired when `action` is pressed.\n\n```lua\nlocal disconnect = actions:justPressedSignal(\&quot;jump\&quot;):connect(function()\n\tprint(\&quot;Jump pressed!\&quot;)\nend)\n\ndisconnect()\n```&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;action&quot;,
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;Signal&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 145,
+                &quot;path&quot;: &quot;src/Actions.lua&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;justReleasedSignal&quot;,
+            &quot;desc&quot;: &quot;Returns a [Signal] that is fired when `action` is released.\n\n```lua\nlocal disconnect = actions:justReleasedSignal(\&quot;jump\&quot;):connect(function()\n\tprint(\&quot;Jump released!\&quot;)\nend)\n\ndisconnect()\n```&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;action&quot;,
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;Signal&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 163,
+                &quot;path&quot;: &quot;src/Actions.lua&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;value&quot;,
+            &quot;desc&quot;: &quot;Returns the sum of the values of each input bound to `action`.\n\nThe value of an input depends on its kind:\n- Buttons have a value of `0` when released and `1` when pressed.\n- [Enum.UserInputType.MouseWheel] returns the `Z` value of [InputObject.Position].\n- [VirtualAxis] returns the value of the positive input minus the value of the negative input.\n- 2D axis values like [Enum.UserInputType.MouseMovement], [Enum.KeyCode.Thumbstick1], or [VirutalAxis2d] will return their magnitude.\n\n:::warning\nThe return value is not clamped to any range.\n:::&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;action&quot;,
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 183,
+                &quot;path&quot;: &quot;src/Actions.lua&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;axis2d&quot;,
+            &quot;desc&quot;: &quot;Returns the sum of `Vector2` values of each input bound to `action`.\n\nThe value of an input depends on its kind:\n- Buttons and 1D axis values like [Enum.UserInputType.MouseWheel] or [VirtualAxis] will always return [Vector2.zero].\n- [Enum.KeyCode.Thumbstick1] and [Enum.KeyCode.Thumbstick2] returns the `(X, Y)` value of [InputObject.Position].\n- [Enum.UserInputType.MouseMovement] returns the `(X, -Y)` value of [InputObject.Delta].\n- [VirtualAxis2d] returns `Vector2.new(rightValue - leftValue, upValue - downValue)`.\n\n:::warning\nThe returned Vector2 is not clamped to any range. Consider using [Actions:normalizedAxis2d] or [Actions:clampedAxis2d].\n:::&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;action&quot;,
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;Vector2&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 203,
+                &quot;path&quot;: &quot;src/Actions.lua&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;normalizedAxis2d&quot;,
+            &quot;desc&quot;: &quot;Returns the [Actions:axis2d] value but normalized. If the value is `Vector2.zero`, `Vector2.zero` will be returned.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;action&quot;,
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;Vector2&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 213,
+                &quot;path&quot;: &quot;src/Actions.lua&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;clampedAxis2d&quot;,
+            &quot;desc&quot;: &quot;Returns the [Actions:axis2d] value but with the length clamped to `1`. This allows for `Vector2s` with a length less than `1` which is useful for gamepad and mobile thumbsticks.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;action&quot;,
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;Vector2&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 229,
+                &quot;path&quot;: &quot;src/Actions.lua&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;hold&quot;,
+            &quot;desc&quot;: &quot;Presses `action` manually like a button. It returns a function to cancel the hold.\n\nThis can be called more than once at the same time and each call will represent a different button press.\n\nThis is useful to implement mobile buttons.\n\n:::warning\nThe returned function will error if called more than once.\n:::&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;action&quot;,
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;A function that when called, stops the hold.&quot;,
+                    &quot;lua_type&quot;: &quot;() -&gt; ()&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 253,
+                &quot;path&quot;: &quot;src/Actions.lua&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;move&quot;,
+            &quot;desc&quot;: &quot;Increases the axis2d value of `action` by `vector`.\n\nThis value resets after [Actions:update] is called.\n\nThis is useful to implement a mobile thumbstick.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;action&quot;,
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;vector&quot;,
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;Vector2&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;Vector2&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 281,
                 &quot;path&quot;: &quot;src/Actions.lua&quot;
             }
         }
     ],
+    &quot;properties&quot;: [],
     &quot;types&quot;: [],
     &quot;name&quot;: &quot;Actions&quot;,
-    &quot;desc&quot;: &quot;Stores actions and an [InputMap](/api/InputMap).&quot;,
+    &quot;desc&quot;: &quot;Updates and reads action state.\n\n```lua\nlocal actions = Actions.new({ \&quot;move\&quot;, \&quot;jump\&quot; })\n\nlocal disconnect = actions:justPressedSignal(\&quot;jump\&quot;):connect(function()\n\tprint(\&quot;Jumped!\&quot;)\nend)\n\nlocal moveVector = actions:axis2d(\&quot;move\&quot;)\n```\n\n:::note\n[Actions:update] should be called every frame before calling [InputState:clear].\n:::&quot;,
     &quot;source&quot;: {
-        &quot;line&quot;: 9,
+        &quot;line&quot;: 24,
         &quot;path&quot;: &quot;src/Actions.lua&quot;
     }
-}</pre></details></div><div class="col col--3"><div class="tableOfContents_35-E thin-scrollbar"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#types" class="table-of-contents__link toc-highlight">Types</a></li><li><a href="#properties" class="table-of-contents__link toc-highlight">Properties</a><ul><li><a href="#inputMap" class="table-of-contents__link toc-highlight">inputMap</a></li></ul></li><li><a href="#functions" class="table-of-contents__link toc-highlight">Functions</a><ul><li><a href="#createAction" class="table-of-contents__link toc-highlight">:createAction</a></li><li><a href="#get" class="table-of-contents__link toc-highlight">:get</a></li></ul></li></ul></div></div></div></div></main></div></div><footer class="footer footer--dark"><div class="container"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2022 nezuo. Built with Moonwave and Docusaurus.</div></div></div></footer></div>
-<script src="/spark/assets/js/runtime~main.c1035ca6.js"></script>
-<script src="/spark/assets/js/main.18bce79f.js"></script>
+}</pre></details></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#types" class="table-of-contents__link toc-highlight">Types</a></li><li><a href="#properties" class="table-of-contents__link toc-highlight">Properties</a></li><li><a href="#functions" class="table-of-contents__link toc-highlight">Functions</a><ul><li><a href="#axis2d" class="table-of-contents__link toc-highlight">:axis2d</a></li><li><a href="#clampedAxis2d" class="table-of-contents__link toc-highlight">:clampedAxis2d</a></li><li><a href="#hold" class="table-of-contents__link toc-highlight">:hold</a></li><li><a href="#justPressedSignal" class="table-of-contents__link toc-highlight">:justPressedSignal</a></li><li><a href="#justReleasedSignal" class="table-of-contents__link toc-highlight">:justReleasedSignal</a></li><li><a href="#move" class="table-of-contents__link toc-highlight">:move</a></li><li><a href="#normalizedAxis2d" class="table-of-contents__link toc-highlight">:normalizedAxis2d</a></li><li><a href="#pressed" class="table-of-contents__link toc-highlight">:pressed</a></li><li><a href="#released" class="table-of-contents__link toc-highlight">:released</a></li><li><a href="#update" class="table-of-contents__link toc-highlight">:update</a></li><li><a href="#value" class="table-of-contents__link toc-highlight">:value</a></li><li><a href="#new" class="table-of-contents__link toc-highlight">.new</a></li></ul></li></ul></div></div></div></div></main></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2023 nezuo. Built with Moonwave and Docusaurus.</div></div></div></footer></div>
+<script src="/spark/assets/js/runtime~main.86a26d35.js"></script>
+<script src="/spark/assets/js/main.cc7b3efb.js"></script>
 </body>
 </html>
