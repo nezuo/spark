@@ -77,12 +77,7 @@ function Actions:update(inputState, inputMap)
 		local pressed = state.manualHolds > 0
 			or state.manualMove.Magnitude > 0
 			or inputState:anyPressed(inputs, gamepad)
-
-		if pressed and not state.pressed then
-			self.justPressedSignals[action]:fire()
-		elseif not pressed and state.pressed then
-			self.justReleasedSignals[action]:fire()
-		end
+		local wasPressed = state.pressed
 
 		state.pressed = pressed
 
@@ -105,6 +100,12 @@ function Actions:update(inputState, inputMap)
 		state.axis2d = axis2d
 
 		state.manualMove = Vector2.zero
+
+		if pressed and not wasPressed then
+			self.justPressedSignals[action]:fire()
+		elseif not pressed and wasPressed then
+			self.justReleasedSignals[action]:fire()
+		end
 	end
 end
 

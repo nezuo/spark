@@ -312,4 +312,37 @@ return function(x)
 		actions:update(inputState, inputMap)
 		assertEqual(actions:axis2d("move"), Vector2.new(3, 1))
 	end)
+
+	x.test("justPressedSignal and justReleasedSignal should fire after values have updated", function()
+		local actions = Actions.new({ "action" })
+
+		local inputState = MutableInputState.new()
+		local inputMap = InputMap.new():insert("action", Enum.UserInputType.MouseMovement)
+
+		actions:move("action", Vector2.xAxis)
+
+		local pressedFired = false
+		actions:justPressedSignal("action"):connect(function()
+			pressedFired = true
+			assertEqual(actions:pressed("action"), true)
+			assertEqual(actions:value("action"), 1)
+			assertEqual(actions:axis2d("action"), Vector2.xAxis)
+		end)
+
+		actions:update(inputState, inputMap)
+
+		assertEqual(pressedFired, true)
+
+		local releasedFired = false
+		actions:justReleasedSignal("action"):connect(function()
+			releasedFired = true
+			assertEqual(actions:pressed("action"), false)
+			assertEqual(actions:value("action"), 0)
+			assertEqual(actions:axis2d("action"), Vector2.zero)
+		end)
+
+		actions:update(inputState, inputMap)
+
+		assertEqual(releasedFired, true)
+	end)
 end
