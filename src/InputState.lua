@@ -39,11 +39,7 @@ function InputState.new()
 		},
 	}
 
-	local function onInputBeganOrEnded(inputObject, sunk)
-		if sunk then
-			return
-		end
-
+	local function onInputBeganOrEnded(inputObject)
 		local keyCode = inputObject.KeyCode
 
 		if Inputs.MOUSE_BUTTONS[inputObject.UserInputType] then
@@ -57,11 +53,7 @@ function InputState.new()
 		end
 	end
 
-	local function onInputChanged(inputObject, sunk)
-		if sunk then
-			return
-		end
-
+	local function onInputChanged(inputObject)
 		if inputObject.UserInputType == Enum.UserInputType.MouseMovement then
 			state.mouseDelta = Vector2.new(inputObject.Delta.X, -inputObject.Delta.Y)
 		elseif inputObject.UserInputType == Enum.UserInputType.MouseWheel then
@@ -74,7 +66,11 @@ function InputState.new()
 		end
 	end
 
-	UserInputService.InputBegan:Connect(onInputBeganOrEnded)
+	UserInputService.InputBegan:Connect(function(inputObject, sunk)
+		if not sunk then
+			onInputBeganOrEnded(inputObject)
+		end
+	end)
 	UserInputService.InputEnded:Connect(onInputBeganOrEnded)
 	UserInputService.InputChanged:Connect(onInputChanged)
 

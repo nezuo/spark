@@ -8,21 +8,11 @@ version = "4.0.0"
 dependencies = []
 
 [[package]]
-name = "nezuo/enumerate"
-version = "0.1.6"
-dependencies = []
-
-[[package]]
 name = "nezuo/midori"
 version = "0.1.3"
 dependencies = []
 
 [[package]]
 name = "nezuo/spark"
-version = "0.1.6"
-dependencies = [["Promise", "evaera/promise@4.0.0"], ["Subject", "nezuo/subject@0.2.0"], ["enumerate", "nezuo/enumerate@0.1.6"], ["Midori", "nezuo/midori@0.1.3"]]
-
-[[package]]
-name = "nezuo/subject"
-version = "0.2.0"
-dependencies = [["Promise", "evaera/promise@4.0.0"]]
+version = "0.2.1"
+dependencies = [["Promise", "evaera/promise@4.0.0"], ["Midori", "nezuo/midori@0.1.3"]]

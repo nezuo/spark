@@ -209,6 +209,7 @@ return function(x)
 
 		local inputState = MutableInputState.new()
 		local inputMap = InputMap.new():insert("jump", Enum.KeyCode.ButtonA)
+		inputMap.associatedGamepad = Enum.UserInputType.Gamepad2
 
 		local counter = 0
 		actions:justPressedSignal("jump"):connect(function()
