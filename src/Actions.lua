@@ -238,7 +238,7 @@ end
 	@return Vector2
 ]=]
 function Actions:normalizedAxis2d(action)
-	local state = self.state[action].axis2d
+	local state = self.states[action].axis2d
 
 	if state.Magnitude > 0 then
 		return state.Unit
@@ -254,7 +254,7 @@ end
 	@return Vector2
 ]=]
 function Actions:clampedAxis2d(action)
-	local state = self.state[action].axis2d
+	local state = self.states[action].axis2d
 
 	if state.Magnitude > 1 then
 		return state.Unit
@@ -278,7 +278,7 @@ end
 	@return () -> () -- A function that when called, stops the hold.
 ]=]
 function Actions:hold(action)
-	local state = self.state[action]
+	local state = self.states[action]
 
 	state.manualHolds += 1
 
