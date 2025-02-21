@@ -86,7 +86,7 @@ end
 	@param inputMap InputMap -- The associated InputMap
 ]=]
 function Actions:update(inputState, inputMap)
-	local gamepad = inputMap.associatedGamepad
+	local gamepad = nil -- todo: inputMap.associatedGamepad
 	if gamepad == nil then
 		for _, candidateGamepad in UserInputService:GetConnectedGamepads() do
 			if gamepad == nil or candidateGamepad.Value < gamepad.Value then
