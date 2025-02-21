@@ -26,7 +26,6 @@
 	@class VirtualAxis2d
 ]=]
 local VirtualAxis2d = {}
-VirtualAxis2d.__index = VirtualAxis2d
 
 --[=[
 	Creates a `VirtualAxis2d` with the corresponding `options`.
@@ -35,13 +34,13 @@ VirtualAxis2d.__index = VirtualAxis2d
 	@return VirtualAxis2d
 ]=]
 function VirtualAxis2d.new(options)
-	return setmetatable({
+	return {
 		kind = "VirtualAxis2d",
 		up = options.up,
 		down = options.down,
 		left = options.left,
 		right = options.right,
-	}, VirtualAxis2d)
+	}
 end
 
 --[=[

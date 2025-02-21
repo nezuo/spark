@@ -2,8 +2,6 @@ local UserInputService = game:GetService("UserInputService")
 
 local Inputs = require(script.Parent.Inputs)
 
-local DEFAULT_DEADZONE = 0.1
-
 --[=[
 	Stores input state derived from [UserInputService] and is used to update [Actions].
 
@@ -97,7 +95,7 @@ function InputState:pressed(input, gamepad)
 
 				local value = self.state.gamepadThumbsticks[input][gamepad]
 
-				return if value == nil then false else value.Magnitude >= DEFAULT_DEADZONE
+				return not not value
 			elseif Inputs.GAMEPAD_BUTTONS[input] then
 				if gamepad == nil then
 					return false
@@ -116,7 +114,7 @@ function InputState:pressed(input, gamepad)
 		end
 	elseif input.kind == "VirtualAxis" then
 		return self:value(input, gamepad) ~= 0
-	elseif input.kind == "VirtualAxis2d" or input.kind == "Multiply2d" then
+	elseif input.kind == "VirtualAxis2d" then
 		local value = self:axis2d(input, gamepad)
 
 		return if value == nil then false else value.Magnitude > 0
@@ -135,7 +133,7 @@ function InputState:value(input, gamepad)
 
 				local value = self.state.gamepadThumbsticks[input][gamepad]
 
-				if value == nil or value.Magnitude < DEFAULT_DEADZONE then
+				if value == nil then
 					return 0
 				else
 					return value.Magnitude
@@ -161,7 +159,7 @@ function InputState:value(input, gamepad)
 		local negative = if input.negative then self:value(input.negative, gamepad) else 0
 
 		return positive - negative
-	elseif input.kind == "VirtualAxis2d" or input.kind == "Multiply2d" then
+	elseif input.kind == "VirtualAxis2d" then
 		local value = self:axis2d(input, gamepad)
 
 		return if value == nil then 0 else value.Magnitude
@@ -174,39 +172,17 @@ function InputState:axis2d(input, gamepad)
 	if input == Enum.UserInputType.MouseMovement then
 		return self.state.mouseDelta
 	elseif input == Enum.KeyCode.Thumbstick1 or input == Enum.KeyCode.Thumbstick2 then
-		local value = self.state.gamepadThumbsticks[input][gamepad]
+		return self.state.gamepadThumbsticks[input][gamepad]
+	elseif typeof(input) == "table" and input.kind == "VirtualAxis2d" then
+		local right = if input.right then self:value(input.right, gamepad) else 0
+		local left = if input.left then self:value(input.left, gamepad) else 0
+		local up = if input.up then self:value(input.up, gamepad) else 0
+		local down = if input.down then self:value(input.down, gamepad) else 0
 
-		if value ~= nil and value.Magnitude >= DEFAULT_DEADZONE then
-			return value
-		end
-	elseif typeof(input) == "table" then
-		if input.kind == "VirtualAxis2d" then
-			local right = if input.right then self:value(input.right, gamepad) else 0
-			local left = if input.left then self:value(input.left, gamepad) else 0
-			local up = if input.up then self:value(input.up, gamepad) else 0
-			local down = if input.down then self:value(input.down, gamepad) else 0
-
-			return Vector2.new(right - left, up - down)
-		elseif input.kind == "Multiply2d" then
-			local value = self:axis2d(input.input, gamepad)
-
-			if value ~= nil then
-				return value * input.multiplier
-			end
-		end
+		return Vector2.new(right - left, up - down)
 	end
 
 	return nil
-end
-
-function InputState:anyPressed(inputs, gamepad)
-	for _, input in inputs do
-		if self:pressed(input, gamepad) then
-			return true
-		end
-	end
-
-	return false
 end
 
 return InputState

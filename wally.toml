@@ -1,6 +1,6 @@
 [package]
-name = "nezuo/spark"
-version = "0.2.2"
+name = "nezuo/spark-preview"
+version = "0.1.0"
 registry = "https://github.com/UpliftGames/wally-index"
 exclude = ["**"]
 include = ["src", "src/*", "default.project.json", "wally.toml", "LICENSE"]

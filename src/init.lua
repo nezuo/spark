@@ -61,10 +61,12 @@
     @within Spark
 ]=]
 return {
+	Modifiers = {
+		scale = require(script.Modifiers.scale),
+	},
 	Actions = require(script.Actions),
-	InputMap = require(script.InputMap),
+	Bind = require(script.Binding.Bind),
 	InputState = require(script.InputState),
-	Multiply2d = require(script.Multiply2d),
 	Rebind = require(script.Rebind),
 	VirtualAxis = require(script.VirtualAxis),
 	VirtualAxis2d = require(script.VirtualAxis2d),

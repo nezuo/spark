@@ -1,5 +1,6 @@
 local UserInputService = game:GetService("UserInputService")
 
+local Bindings = require(script.Parent.Binding.Bindings)
 local Signal = require(script.Parent.Signal)
 
 --[=[
@@ -30,13 +31,12 @@ Actions.__index = Actions
 	@param actions { string } -- List of action names
 	@return Actions
 ]=]
-function Actions.new(actions)
-	local state = {}
+function Actions.new(actions, bindActions)
+	local states = {}
 	local justPressedSignals = {}
 	local justReleasedSignals = {}
-
 	for _, action in actions do
-		state[action] = {
+		states[action] = {
 			manualHolds = 0,
 			manualMove = Vector2.zero,
 			pressed = false,
@@ -47,11 +47,34 @@ function Actions.new(actions)
 		justReleasedSignals[action] = Signal.new()
 	end
 
-	return setmetatable({
-		state = state,
+	local self = setmetatable({
+		states = states,
 		justPressedSignals = justPressedSignals,
 		justReleasedSignals = justReleasedSignals,
+
+		bindActions = bindActions,
+		actionToBinds = {},
+		actionToModifiers = {},
+		actionToConditions = {},
 	}, Actions)
+
+	self:reload()
+
+	return self
+end
+
+function Actions:reload()
+	local bindings = Bindings.new()
+
+	self.bindActions(bindings)
+
+	table.clear(self.actionToBinds)
+
+	for action in self.states do
+		self.actionToBinds[action] = bindings.actionToBinds[action] or {}
+		self.actionToModifiers[action] = bindings.actionToModifiers[action] or {}
+		self.actionToConditions[action] = bindings.actionToConditions[action] or {}
+	end
 end
 
 --[=[
@@ -72,31 +95,37 @@ function Actions:update(inputState, inputMap)
 		end
 	end
 
-	for action, state in self.state do
-		local inputs = inputMap:get(action)
-		local pressed = state.manualHolds > 0
-			or state.manualMove.Magnitude > 0
-			or inputState:anyPressed(inputs, gamepad)
-		local wasPressed = state.pressed
-
-		state.pressed = pressed
-
-		local value = 0
-		for _, input in inputs do
-			value += inputState:value(input, gamepad)
-		end
-
-		state.value = value + state.manualMove.Magnitude + state.manualHolds
-
+	-- todo: conditions
+	for action, state in self.states do
+		local pressed = state.manualHolds > 0 or state.manualMove.Magnitude > 0
+		local value = state.manualMove.Magnitude + state.manualHolds
 		local axis2d = state.manualMove
-		for _, input in inputs do
-			local inputValue = inputState:axis2d(input, gamepad)
+		for _, binds in self.actionToBinds[action] do
+			for _, bind in binds do
+				for _, input in bind.inputs do
+					local inputPressed = inputState:pressed(input)
+					local inputValue = inputState:value(input, gamepad)
+					local inputAxis2d = inputState:axis2d(input, gamepad)
 
-			if inputValue ~= nil then
-				axis2d += inputValue
+					for _, modifier in bind.modifiers do
+						inputPressed, inputValue, inputAxis2d = modifier(inputPressed, inputValue, inputAxis2d)
+					end
+
+					pressed = pressed or inputPressed
+					value += inputValue
+					axis2d += inputAxis2d
+				end
 			end
 		end
 
+		for _, modifier in self.actionToModifiers[action] do
+			pressed, value, axis2d = modifier(pressed, value, axis2d)
+		end
+
+		local wasPressed = state.pressed
+
+		state.pressed = pressed
+		state.value = value
 		state.axis2d = axis2d
 
 		state.manualMove = Vector2.zero
@@ -116,7 +145,7 @@ end
 	@return boolean
 ]=]
 function Actions:pressed(action)
-	return self.state[action].pressed
+	return self.states[action].pressed
 end
 
 --[=[
@@ -126,7 +155,7 @@ end
 	@return boolean
 ]=]
 function Actions:released(action)
-	return not self.state[action].pressed
+	return not self.states[action].pressed
 end
 
 --[=[
@@ -182,7 +211,7 @@ end
 	@return number
 ]=]
 function Actions:value(action)
-	return self.state[action].value
+	return self.states[action].value
 end
 
 --[=[
@@ -202,7 +231,7 @@ end
 	@return Vector2
 ]=]
 function Actions:axis2d(action)
-	return self.state[action].axis2d
+	return self.states[action].axis2d
 end
 
 --[=[
@@ -280,7 +309,7 @@ end
 	@return Vector2
 ]=]
 function Actions:move(action, vector)
-	self.state[action].manualMove += vector
+	self.states[action].manualMove += vector
 end
 
 return Actions
