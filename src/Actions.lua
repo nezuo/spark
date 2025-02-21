@@ -83,9 +83,8 @@ end
 	This should be called once every frame before calling [InputState:clear].
 
 	@param inputState InputState
-	@param inputMap InputMap -- The associated InputMap
 ]=]
-function Actions:update(inputState, inputMap)
+function Actions:update(inputState)
 	local gamepad = nil -- todo: inputMap.associatedGamepad
 	if gamepad == nil then
 		for _, candidateGamepad in UserInputService:GetConnectedGamepads() do
@@ -100,21 +99,19 @@ function Actions:update(inputState, inputMap)
 		local pressed = state.manualHolds > 0 or state.manualMove.Magnitude > 0
 		local value = state.manualMove.Magnitude + state.manualHolds
 		local axis2d = state.manualMove
-		for _, binds in self.actionToBinds[action] do
-			for _, bind in binds do
-				for _, input in bind.inputs do
-					local inputPressed = inputState:pressed(input)
-					local inputValue = inputState:value(input, gamepad)
-					local inputAxis2d = inputState:axis2d(input, gamepad)
+		for _, bind in self.actionToBinds[action] do
+			for _, input in bind.inputs do
+				local inputPressed = inputState:pressed(input)
+				local inputValue = inputState:value(input, gamepad)
+				local inputAxis2d = inputState:axis2d(input, gamepad) or Vector2.zero
 
-					for _, modifier in bind.modifiers do
-						inputPressed, inputValue, inputAxis2d = modifier(inputPressed, inputValue, inputAxis2d)
-					end
-
-					pressed = pressed or inputPressed
-					value += inputValue
-					axis2d += inputAxis2d
+				for _, modifier in bind.modifiers do
+					inputPressed, inputValue, inputAxis2d = modifier(inputPressed, inputValue, inputAxis2d)
 				end
+
+				pressed = pressed or inputPressed
+				value += inputValue
+				axis2d += inputAxis2d
 			end
 		end
 
