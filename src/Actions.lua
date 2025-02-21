@@ -37,7 +37,7 @@ function Actions.new(actions, bindActions)
 	local justReleasedSignals = {}
 	for _, action in actions do
 		states[action] = {
-			manualHolds = 0,
+			manualPresses = 0,
 			manualMove = Vector2.zero,
 			pressed = false,
 			value = 0,
@@ -96,8 +96,8 @@ function Actions:update(inputState)
 
 	-- todo: conditions
 	for action, state in self.states do
-		local pressed = state.manualHolds > 0 or state.manualMove.Magnitude > 0
-		local value = state.manualMove.Magnitude + state.manualHolds
+		local pressed = state.manualPresses > 0 or state.manualMove.Magnitude > 0
+		local value = state.manualMove.Magnitude + state.manualPresses
 		local axis2d = state.manualMove
 		for _, bind in self.actionToBinds[action] do
 			for _, input in bind.inputs do
@@ -126,6 +126,7 @@ function Actions:update(inputState)
 		state.axis2d = axis2d
 
 		state.manualMove = Vector2.zero
+		state.manualPresses = 0
 
 		if pressed and not wasPressed then
 			self.justPressedSignals[action]:fire()
@@ -263,35 +264,8 @@ function Actions:clampedAxis2d(action)
 	end
 end
 
---[=[
-	Presses `action` manually like a button. It returns a function to cancel the hold.
-
-	This can be called more than once at the same time and each call will represent a different button press.
-
-	This is useful to implement mobile buttons.
-
-	:::warning
-	The returned function will error if called more than once.
-	:::
-
-	@param action string
-	@return () -> () -- A function that when called, stops the hold.
-]=]
-function Actions:hold(action)
-	local state = self.states[action]
-
-	state.manualHolds += 1
-
-	local called = false
-
-	return function()
-		if called then
-			error("Cannot cancel hold instance more than once")
-		end
-
-		called = true
-		state.manualHolds -= 1
-	end
+function Actions:press(action)
+	self.states[action].manualPresses += 1
 end
 
 --[=[
