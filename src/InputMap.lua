@@ -1,9 +1,4 @@
-local Deserializer = require(script.Parent.Serialization.Deserializer)
-local Serializer = require(script.Parent.Serialization.Serializer)
 local getDeviceFromInput = require(script.Parent.getDeviceFromInput)
-
-local HEADER = "SPARK"
-local SERIALIZATION_VERSION = 0
 
 local function push(list, value)
 	local new = table.clone(list)
@@ -100,41 +95,6 @@ function InputMap.new()
 end
 
 --[=[
-	Deserializes the buffer returned from [InputMap:serialize] back into an InputMap.
-
-	@param serialized buffer
-	@return InputMap
-]=]
-function InputMap.deserialize(serialized)
-	local deserializer = Deserializer.new(serialized)
-
-	local header = deserializer:readString(#HEADER)
-	local version = deserializer:readU8()
-
-	if header ~= HEADER then
-		error("Invalid header", 2)
-	end
-
-	if version ~= SERIALIZATION_VERSION then
-		error("Invalid serialization version", 2)
-	end
-
-	local inputMap = InputMap.new()
-
-	while not deserializer:empty() do
-		local action, inputCount = deserializer:readActionHeader()
-
-		for _ = 1, inputCount do
-			local input = deserializer:readInput()
-
-			inputMap:insert(action, input)
-		end
-	end
-
-	return inputMap
-end
-
---[=[
 	Maps inputs to `action`.
 
 	If an input is already mapped to the `action`, it won't be mapped again.
@@ -225,62 +185,6 @@ end
 ]=]
 function InputMap:clone()
 	return deepCopy(self)
-end
-
---[=[
-	Returns a serialized version of the `InputMap` as a buffer. This can be used to save or replicate it.
-
-	@return buffer
-]=]
-function InputMap:serialize()
-	local length = #HEADER + 1 -- 1 byte for the version.
-
-	for action, inputs in self.map do
-		length += 2 + #action -- The 2 accounts for the length of the name and the input count.
-
-		for _, input in inputs do
-			length += 1 -- This accounts for the input kind.
-
-			if typeof(input) == "EnumItem" then
-				length += 2
-			elseif input.kind == "Multiply2d" then
-				length += 3 + 16 -- This accounts for the 3 byte input and the 16 byte Vector2 sensitivity.
-			elseif input.kind == "VirtualAxis" then
-				length += 2 * 3 -- This accounts for two 3 byte inputs.
-			elseif input.kind == "VirtualAxis2d" then
-				length += 4 * 3 -- This accounts for four 3 byte inputs.
-			end
-		end
-	end
-
-	local serialized = buffer.create(length)
-	local serializer = Serializer.new(serialized)
-
-	serializer:writeString(HEADER)
-	serializer:writeU8(SERIALIZATION_VERSION)
-
-	for action, inputs in self.map do
-		local inputCount = 0
-		for _ in inputs do
-			inputCount += 1
-		end
-
-		serializer:writeActionHeader(action, inputCount)
-
-		for _, input in inputs do
-			if typeof(input) == "EnumItem" then
-				serializer:writeEnumInput(input)
-			elseif input.kind == "Multiply2d" then
-				serializer:writeMultiply2d(input)
-			elseif input.kind == "VirtualAxis" then
-				serializer:writeVirtualAxis(input)
-			elseif input.kind == "VirtualAxis2d" then
-				serializer:writeVirtualAxis2d(input)
-			end
-		end
-	end
-
-	return serialized
 end
 
 return InputMap

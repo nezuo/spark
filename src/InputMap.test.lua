@@ -1,5 +1,4 @@
 local InputMap = require(script.Parent.InputMap)
-local Multiply2d = require(script.Parent.Multiply2d)
 local VirtualAxis = require(script.Parent.VirtualAxis)
 local VirtualAxis2d = require(script.Parent.VirtualAxis2d)
 
@@ -123,29 +122,5 @@ return function(x)
 		-- Clone should not affect old InputMap.
 		virtualAxis.positive = nil
 		assertEqual(virtualAxis == inputMap:get("other")[1], false)
-	end)
-
-	x.test("serializes and deserializes", function()
-		local virtualAxis = VirtualAxis.verticalArrowKeys()
-		local virtualAxis2d = VirtualAxis2d.new({
-			up = Enum.KeyCode.W,
-			down = Enum.UserInputType.MouseButton1,
-			left = Enum.KeyCode.A,
-		})
-		local multiply = Multiply2d.new(Enum.UserInputType.MouseMovement, Vector2.new(0.2, 0.5))
-
-		local serialized = InputMap.new()
-			:insert("button", Enum.KeyCode.O, Enum.UserInputType.MouseButton1)
-			:insert("axis1d", virtualAxis)
-			:insert("axis2d", virtualAxis2d, multiply)
-			:serialize()
-
-		assertEqual(typeof(serialized), "buffer")
-
-		local deserialized = InputMap.deserialize(serialized)
-
-		assert(equalsDeep(deserialized:get("button"), { Enum.KeyCode.O, Enum.UserInputType.MouseButton1 }))
-		assert(equalsDeep(deserialized:get("axis1d"), { virtualAxis }))
-		assert(equalsDeep(deserialized:get("axis2d"), { virtualAxis2d, multiply }))
 	end)
 end
