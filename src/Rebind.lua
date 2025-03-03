@@ -70,6 +70,8 @@ end
 
 function Rebind:respectGameProcessedEvent()
 	self.shouldRespectGameProcessedEvent = true
+
+	return self
 end
 
 --[=[
