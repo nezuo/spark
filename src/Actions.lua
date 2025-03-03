@@ -2,6 +2,27 @@ local UserInputService = game:GetService("UserInputService")
 
 local Bindings = require(script.Parent.Binding.Bindings)
 local Signal = require(script.Parent.Signal)
+local getDeviceFromInput = require(script.Parent.getDeviceFromInput)
+
+local function isInputInDevices(input, devices)
+	if typeof(input) == "table" then
+		if input.kind == "VirtualAxis" then
+			for _, direction in { "positive", "negative" } do
+				if table.find(devices, getDeviceFromInput(input[direction])) then
+					return true
+				end
+			end
+		elseif input.kind == "VirtualAxis2d" then
+			for _, direction in { "up", "down", "left", "right" } do
+				if table.find(devices, getDeviceFromInput(input[direction])) then
+					return true
+				end
+			end
+		end
+	end
+
+	return table.find(devices, getDeviceFromInput(input)) ~= nil
+end
 
 --[=[
 	Updates and reads action state.
@@ -281,6 +302,19 @@ end
 ]=]
 function Actions:move(action, vector)
 	self.states[action].manualMove += vector
+end
+
+function Actions:getInputsByDevices(action, devices)
+	local inputs = {}
+	for _, bind in self.actionToBinds[action] do
+		for _, input in bind.inputs do
+			if isInputInDevices(input, devices) then
+				table.insert(inputs, input)
+			end
+		end
+	end
+
+	return table.freeze(inputs)
 end
 
 return Actions
