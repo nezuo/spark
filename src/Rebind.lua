@@ -36,6 +36,7 @@ function Rebind.new()
 	return setmetatable({
 		devices = {},
 		excludedInputs = {},
+		shouldRespectGameProcessedEvent = false,
 	}, Rebind)
 end
 
@@ -67,6 +68,10 @@ function Rebind:withoutInputs(inputs)
 	return self
 end
 
+function Rebind:respectGameProcessedEvent()
+	self.shouldRespectGameProcessedEvent = true
+end
+
 --[=[
 	Returns a [Promise](https://eryn.io/roblox-lua-promise/api/Promise) that resolves with the first [Button] the user presses.
 
@@ -77,7 +82,11 @@ end
 function Rebind:start()
 	return Promise.new(function(resolve, _, onCancel)
 		local connection
-		connection = UserInputService.InputBegan:Connect(function(inputObject)
+		connection = UserInputService.InputBegan:Connect(function(inputObject, sunk)
+			if self.shouldRespectGameProcessedEvent and sunk then
+				return
+			end
+
 			local input = if inputObject.KeyCode == Enum.KeyCode.Unknown
 				then inputObject.UserInputType
 				else inputObject.KeyCode
