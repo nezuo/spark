@@ -36,7 +36,6 @@ function Rebind.new()
 	return setmetatable({
 		devices = {},
 		excludedInputs = {},
-		shouldRespectGameProcessedEvent = false,
 	}, Rebind)
 end
 
@@ -68,8 +67,8 @@ function Rebind:withoutInputs(inputs)
 	return self
 end
 
-function Rebind:respectGameProcessedEvent()
-	self.shouldRespectGameProcessedEvent = true
+function Rebind:retainInput(callback)
+	self.retainInputCallback = callback
 
 	return self
 end
@@ -85,13 +84,13 @@ function Rebind:start()
 	return Promise.new(function(resolve, _, onCancel)
 		local connection
 		connection = UserInputService.InputBegan:Connect(function(inputObject, sunk)
-			if self.shouldRespectGameProcessedEvent and sunk then
-				return
-			end
-
 			local input = if inputObject.KeyCode == Enum.KeyCode.Unknown
 				then inputObject.UserInputType
 				else inputObject.KeyCode
+
+			if self.retainInputCallback ~= nil and not self.retainInputCallback(input, sunk) then
+				return
+			end
 
 			-- The only UserInputType buttons are mouse buttons.
 			if input:IsA("UserInputType") and Inputs.MOUSE_BUTTONS[input] == nil then
