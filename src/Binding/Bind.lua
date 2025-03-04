@@ -9,6 +9,7 @@ function Bind.new(...)
 	end
 
 	return setmetatable({
+		kind = "Bind",
 		inputs = inputs,
 		modifiers = {},
 		conditions = {},

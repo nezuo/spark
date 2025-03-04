@@ -18,7 +18,7 @@ function Bindings:insert(action, ...)
 	end
 
 	for _, bind in { ... } do
-		if typeof(bind) == "table" then
+		if typeof(bind) == "table" and bind.kind == "Bind" then
 			table.insert(self.actionToBinds[action], bind)
 		else
 			table.insert(self.actionToBinds[action], Bind.new(bind))
