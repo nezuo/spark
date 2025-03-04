@@ -122,7 +122,7 @@ function Actions:update(inputState)
 		local axis2d = state.manualMove
 		for _, bind in self.actionToBinds[action] do
 			for _, input in bind.inputs do
-				local inputPressed = inputState:pressed(input)
+				local inputPressed = inputState:pressed(input, gamepad)
 				local inputValue = inputState:value(input, gamepad)
 				local inputAxis2d = inputState:axis2d(input, gamepad) or Vector2.zero
 
