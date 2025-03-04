@@ -70,4 +70,5 @@ return {
 	Rebind = require(script.Rebind),
 	VirtualAxis = require(script.VirtualAxis),
 	VirtualAxis2d = require(script.VirtualAxis2d),
+	getDeviceFromInput = require(script.getDeviceFromInput),
 }
