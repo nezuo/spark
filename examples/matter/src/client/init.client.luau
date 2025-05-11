@@ -8,16 +8,18 @@ local updateInput = require(script.updateInput)
 
 local InputState = Spark.InputState
 local Actions = Spark.Actions
-local InputMap = Spark.InputMap
 local VirtualAxis2d = Spark.VirtualAxis2d
+
+local actions = Actions.new({ "jump", "attack", "move" })
+actions:setRebuildBindings(function(bindings)
+	bindings:bind("jump", Enum.KeyCode.Space, Enum.KeyCode.ButtonA)
+	bindings:bind("attack", Enum.UserInputType.MouseButton1, Enum.KeyCode.ButtonR1)
+	bindings:bind("move", VirtualAxis2d.wasd(), Enum.KeyCode.Thumbstick1)
+end)
 
 local state = {
 	inputState = InputState.new(),
-	actions = Actions.new({ "jump", "attack", "move" }),
-	inputMap = InputMap.new()
-		:insert("jump", Enum.KeyCode.Space, Enum.KeyCode.ButtonA)
-		:insert("attack", Enum.UserInputType.MouseButton1, Enum.KeyCode.ButtonR1)
-		:insert("move", VirtualAxis2d.wasd(), Enum.KeyCode.Thumbstick1),
+	actions = actions,
 }
 
 local world = Matter.World.new()

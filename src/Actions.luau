@@ -25,16 +25,29 @@ local function isInputInDevices(input, devices)
 end
 
 --[=[
-	Updates and reads action state.
+	`Actions` allows you to bind inputs to actions and read their state.
 
 	```lua
-	local actions = Actions.new({ "move", "jump" })
+	local actions = Actions.new({ "move", "jump" }):setRebuildBindings(function(bindings)
+		bindings:bind("move", VirtualAxis2d.new({
+			up = Enum.KeyCode.W,
+			down = Enum.KeyCode.S,
+			left = Enum.KeyCode.A,
+			right = Enum.KeyCode.D
+		}))
+		bindings:bind("jump", Enum.KeyCode.Space)
+	end)
 
 	local disconnect = actions:justPressedSignal("jump"):connect(function()
 		print("Jumped!")
 	end)
 
 	local moveVector = actions:axis2d("move")
+	```
+
+	To get auto-completion and type checking for the action names, cast Actions like this:
+	```lua
+	local actions = (Actions.new({ "move", "jump" }) :: any) :: Spark.Actions<"move" | "jump">
 	```
 
 	:::note
@@ -52,49 +65,95 @@ Actions.__index = Actions
 	@param actions { string } -- List of action names
 	@return Actions
 ]=]
-function Actions.new(actions, bindActions)
+function Actions.new(actions)
 	local states = {}
 	local justPressedSignals = {}
 	local justReleasedSignals = {}
 	for _, action in actions do
 		states[action] = {
 			manualPresses = 0,
-			manualMove = Vector2.zero,
+			manualMoveAxis = 0,
+			manualMoveAxis2d = Vector2.zero,
 			pressed = false,
-			value = 0,
+			axis = 0,
 			axis2d = Vector2.zero,
 		}
 		justPressedSignals[action] = Signal.new()
 		justReleasedSignals[action] = Signal.new()
 	end
 
-	local self = setmetatable({
+	return setmetatable({
 		states = states,
 		justPressedSignals = justPressedSignals,
 		justReleasedSignals = justReleasedSignals,
 
-		bindActions = bindActions,
+		rebuildBindingsCallback = function() end,
+
 		actionToBinds = {},
 		actionToModifiers = {},
-		actionToConditions = {},
-	}, Actions)
 
-	self:reload()
+		associatedGamepad = nil,
+	}, Actions)
+end
+
+--[=[
+	Sets the gamepad that will be used to check for gamepad inputs.
+
+	```lua
+	local actions = Actions.new({ "move", "jump" })
+	actions:setAssociatedGamepad(Enum.UserInputType.Gamepad1)
+	```
+
+	@param gamepad Enum.UserInputType
+]=]
+function Actions:setAssociatedGamepad(gamepad)
+	self.associatedGamepad = gamepad
+end
+
+--[=[
+	Removes the associated gamepad and instead uses the first connected gamepad.
+
+]=]
+function Actions:removeAssociatedGamepad()
+	self.associatedGamepad = nil
+end
+
+--[=[
+	Sets the callback that binds inputs to actions.
+
+	The callback will be called in this function and whenever [Actions:rebuildBindings] is called.
+
+	```lua
+	local actions = Actions.new({ "move", "jump" }):setRebuildBindings(function(bindings)
+		bindings:bind("jump", Enum.KeyCode.Space)
+	end)
+	```
+
+	@param rebuildBindings (bindings: Bindings) -> ()
+	@return Actions -- Returns self
+]=]
+function Actions:setRebuildBindings(rebuildBindings)
+	self.rebuildBindingsCallback = rebuildBindings
+
+	self:rebuildBindings()
 
 	return self
 end
 
-function Actions:reload()
+--[=[
+	Updates action bindings by calling the callback set by [Actions:setRebuildBindings].
+]=]
+function Actions:rebuildBindings()
 	local bindings = Bindings.new()
 
-	self.bindActions(bindings)
+	self.rebuildBindingsCallback(bindings)
 
 	table.clear(self.actionToBinds)
+	table.clear(self.actionToModifiers)
 
 	for action in self.states do
 		self.actionToBinds[action] = bindings.actionToBinds[action] or {}
 		self.actionToModifiers[action] = bindings.actionToModifiers[action] or {}
-		self.actionToConditions[action] = bindings.actionToConditions[action] or {}
 	end
 end
 
@@ -106,7 +165,7 @@ end
 	@param inputState InputState
 ]=]
 function Actions:update(inputState)
-	local gamepad = nil -- todo: inputMap.associatedGamepad
+	local gamepad = self.associatedGamepad
 	if gamepad == nil then
 		for _, candidateGamepad in UserInputService:GetConnectedGamepads() do
 			if gamepad == nil or candidateGamepad.Value < gamepad.Value then
@@ -115,39 +174,42 @@ function Actions:update(inputState)
 		end
 	end
 
-	-- todo: conditions
 	for action, state in self.states do
-		local pressed = state.manualPresses > 0 or state.manualMove.Magnitude > 0
-		local value = state.manualMove.Magnitude + state.manualPresses
-		local axis2d = state.manualMove
+		local pressed = state.manualPresses > 0
+			or state.manualMoveAxis2d.Magnitude > 0
+			or math.abs(state.manualMoveAxis) > 0
+		local axis = state.manualMoveAxis2d.Magnitude + state.manualPresses + state.manualMoveAxis
+
+		local axis2d = state.manualMoveAxis2d
 		for _, bind in self.actionToBinds[action] do
 			for _, input in bind.inputs do
 				local inputPressed = inputState:pressed(input, gamepad)
-				local inputValue = inputState:value(input, gamepad)
+				local inputAxis = inputState:axis(input, gamepad)
 				local inputAxis2d = inputState:axis2d(input, gamepad) or Vector2.zero
 
 				for _, modifier in bind.modifiers do
-					inputPressed, inputValue, inputAxis2d = modifier(inputPressed, inputValue, inputAxis2d)
+					inputPressed, inputAxis, inputAxis2d = modifier(inputPressed, inputAxis, inputAxis2d)
 				end
 
 				pressed = pressed or inputPressed
-				value += inputValue
+				axis += inputAxis
 				axis2d += inputAxis2d
 			end
 		end
 
 		for _, modifier in self.actionToModifiers[action] do
-			pressed, value, axis2d = modifier(pressed, value, axis2d)
+			pressed, axis, axis2d = modifier(pressed, axis, axis2d)
 		end
 
 		local wasPressed = state.pressed
 
 		state.pressed = pressed
-		state.value = value
+		state.axis = axis
 		state.axis2d = axis2d
 
-		state.manualMove = Vector2.zero
 		state.manualPresses = 0
+		state.manualMoveAxis = 0
+		state.manualMoveAxis2d = Vector2.zero
 
 		if pressed and not wasPressed then
 			self.justPressedSignals[action]:fire()
@@ -214,9 +276,9 @@ function Actions:justReleasedSignal(action)
 end
 
 --[=[
-	Returns the sum of the values of each input bound to `action`.
+	Returns the sum of the axis values of each input bound to `action`.
 
-	The value of an input depends on its kind:
+	The axis value of an input depends on its kind:
 	- Buttons have a value of `0` when released and `1` when pressed.
 	- [Enum.UserInputType.MouseWheel] returns the `Z` value of [InputObject.Position].
 	- [VirtualAxis] returns the value of the positive input minus the value of the negative input.
@@ -229,14 +291,14 @@ end
 	@param action string
 	@return number
 ]=]
-function Actions:value(action)
-	return self.states[action].value
+function Actions:axis(action)
+	return self.states[action].axis
 end
 
 --[=[
-	Returns the sum of `Vector2` values of each input bound to `action`.
+	Returns the sum of axis 2D values of each input bound to `action`.
 
-	The value of an input depends on its kind:
+	The axis 2D value of an input depends on its kind:
 	- Buttons and 1D axis values like [Enum.UserInputType.MouseWheel] or [VirtualAxis] will always return [Vector2.zero].
 	- [Enum.KeyCode.Thumbstick1] and [Enum.KeyCode.Thumbstick2] returns the `(X, Y)` value of [InputObject.Position].
 	- [Enum.UserInputType.MouseMovement] returns the `(X, -Y)` value of [InputObject.Delta].
@@ -290,20 +352,47 @@ function Actions:press(action)
 end
 
 --[=[
-	Increases the axis2d value of `action` by `vector`.
+	Increases the axis value of `action` by `value`.
 
 	This value resets after [Actions:update] is called.
 
-	This is useful to implement a mobile thumbstick.
-
 	@param action string
-	@param vector Vector2
-	@return Vector2
+	@param value number
 ]=]
-function Actions:move(action, vector)
-	self.states[action].manualMove += vector
+function Actions:moveAxis(action, value)
+	self.states[action].manualMoveAxis += value
 end
 
+--[=[
+	Increases the axis 2D value of `action` by `value`.
+
+	This value resets after [Actions:update] is called.
+
+	@param action string
+	@param value Vector2
+]=]
+function Actions:moveAxis2d(action, value)
+	self.states[action].manualMoveAxis2d += value
+end
+
+--[=[
+	Returns the list of inputs bound to `action` that belong to the given `devices`.
+
+	If a [VirtualAxis] or [VirtualAxis2d] has a [Button] that belongs to `deviecs` it will be included.
+
+	```lua
+	local actions = Actions.new({ "action" }):setRebuildBindings(function(bindings)
+		bindings:bind("action", Enum.KeyCode.Space, Enum.UserInputType.MouseButton1)
+	end)
+
+	print(actions:getInputsByDevices("action", { "Keyboard" })) -- { Enum.KeyCode.Space }
+	print(actions:getInputsByDevices("action", { "Mouse" })) -- { Enum.UserInputType.MouseButton1 }
+	```
+
+	@param action string
+	@param devices { Device }
+	@return { Input }
+]=]
 function Actions:getInputsByDevices(action, devices)
 	local inputs = {}
 	for _, bind in self.actionToBinds[action] do

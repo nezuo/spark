@@ -103,17 +103,17 @@ function InputState:pressed(input, gamepad)
 
 				return self.state.gamepadButtons[input][gamepad] == true
 			else
-				return self.state.keycodes[input]
+				return self.state.keycodes[input] == true
 			end
 		elseif Inputs.MOUSE_BUTTONS[input] then
-			return self.state.mouseButtons[input]
+			return self.state.mouseButtons[input] == true
 		elseif input == Enum.UserInputType.MouseMovement then
 			return self.state.mouseDelta.Magnitude > 0
 		elseif input == Enum.UserInputType.MouseWheel then
 			return self.state.mouseWheel ~= 0
 		end
 	elseif input.kind == "VirtualAxis" then
-		return self:value(input, gamepad) ~= 0
+		return self:axis(input, gamepad) ~= 0
 	elseif input.kind == "VirtualAxis2d" then
 		local value = self:axis2d(input, gamepad)
 
@@ -123,7 +123,7 @@ function InputState:pressed(input, gamepad)
 	error("Invalid input")
 end
 
-function InputState:value(input, gamepad)
+function InputState:axis(input, gamepad)
 	if typeof(input) == "EnumItem" then
 		if input:IsA("KeyCode") then
 			if input == Enum.KeyCode.Thumbstick1 or input == Enum.KeyCode.Thumbstick2 then
@@ -155,8 +155,8 @@ function InputState:value(input, gamepad)
 			return self.state.mouseWheel
 		end
 	elseif input.kind == "VirtualAxis" then
-		local positive = if input.positive then self:value(input.positive, gamepad) else 0
-		local negative = if input.negative then self:value(input.negative, gamepad) else 0
+		local positive = if input.positive then self:axis(input.positive, gamepad) else 0
+		local negative = if input.negative then self:axis(input.negative, gamepad) else 0
 
 		return positive - negative
 	elseif input.kind == "VirtualAxis2d" then
@@ -174,10 +174,10 @@ function InputState:axis2d(input, gamepad)
 	elseif input == Enum.KeyCode.Thumbstick1 or input == Enum.KeyCode.Thumbstick2 then
 		return self.state.gamepadThumbsticks[input][gamepad]
 	elseif typeof(input) == "table" and input.kind == "VirtualAxis2d" then
-		local right = if input.right then self:value(input.right, gamepad) else 0
-		local left = if input.left then self:value(input.left, gamepad) else 0
-		local up = if input.up then self:value(input.up, gamepad) else 0
-		local down = if input.down then self:value(input.down, gamepad) else 0
+		local right = if input.right then self:axis(input.right, gamepad) else 0
+		local left = if input.left then self:axis(input.left, gamepad) else 0
+		local up = if input.up then self:axis(input.up, gamepad) else 0
+		local down = if input.down then self:axis(input.down, gamepad) else 0
 
 		return Vector2.new(right - left, up - down)
 	end

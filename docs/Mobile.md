@@ -1,7 +1,7 @@
 # Mobile
 Spark allows you to activate an action manually. This is especially useful to implement mobile touch controls.
 
-For buttons, you can activate an action with `Actions:hold`. Here's how you might implement a mobile button:
+For buttons, you can activate an action with `Actions:press`. Here's how you might implement a mobile button:
 ```lua
 local imageButton = Instance.new("ImageButton")
 
@@ -13,13 +13,14 @@ imageButton.InputBegan:Connect(function(inputObject)
 		return
 	end
 
-	-- You can either check if inputObject.UserInputType == Enum.UserInputType.Touch or hide
-    -- the button when touch isn't being used.
-
 	if hold == nil then
+		-- Press the button every frame before input is updated. If held inputs don't matter, you could call press without a loop.
+		local connection = RunService.PreRender:Connect(function()
+			actions:press("attack")
+		end)
+
 		hold = {
-            -- The hold method acts like a button press. It returns a function to stop the press.
-			stopHold = actions:hold("attack"),
+			connection = connection,
 			inputObject = inputObject,
 		}
 	end
@@ -28,17 +29,21 @@ end)
 imageButton.InputEnded:Connect(function(inputObject)
 	-- Only stop the hold if it's the same touch that started it.
 	if hold ~= nil and hold.inputObject == inputObject then
-		hold.stopHold()
+		hold.connection:Disconnect()
 		hold = nil
 	end
 end)
 ```
 
-For 2D axis values like movement or camera movement, use `Actions:move`.
+For 1D/2D axis values like movement, camera movement, or camera zoom, use `Actions:moveAxis` and `Actions:moveAxis2d`.
 ```lua
 local thumbstickDirection = Vector2.one -- Get this value from your thumbstick.
 
 -- This will increase the 2D axis value of the move action by thumbstickDirection.
 -- It's reset every time `Actions:update` is called, so you need to call it every frame.
-actions:move("move", thumbstickDirection)
+actions:moveAxis2d("move", thumbstickDirection)
+
+local cameraZoomDelta = 0 -- Could be a value from a pinch motion
+
+actions:moveAxis("cameraZoom", cameraZoomDelta)
 ```

@@ -1,30 +1,30 @@
 {
-  "name": "spark-test",
-  "tree": {
-    "$className": "DataModel",
-    "Players": {
-      "$properties": {
-        "CharacterAutoLoads": false
-      }
-    },
-    "ReplicatedStorage": {
-      "Packages": {
-        "Spark": {
-          "$path": "../"
+    "name": "spark-test",
+    "tree": {
+        "$className": "DataModel",
+        "Players": {
+            "$properties": {
+                "CharacterAutoLoads": false
+            }
         },
-        "$path": "../Packages"
-      },
-      "DevPackages": {
-        "$path": "../DevPackages"
-      },
-      "MutableInputState": {
-        "$path": "MutableInputState.lua"
-      }
-    },
-    "ServerScriptService": {
-      "runTests": {
-        "$path": "runTests.server.lua"
-      }
+        "ReplicatedStorage": {
+            "Packages": {
+                "Spark": {
+                    "$path": "../"
+                },
+                "$path": "../Packages"
+            },
+            "DevPackages": {
+                "$path": "../DevPackages"
+            },
+            "MutableInputState": {
+                "$path": "MutableInputState.luau"
+            }
+        },
+        "ServerScriptService": {
+            "runTests": {
+                "$path": "runTests.server.luau"
+            }
+        }
     }
-  }
 }

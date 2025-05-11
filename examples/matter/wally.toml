@@ -5,5 +5,5 @@ registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 
 [dependencies]
-Matter = "evaera/matter@0.7.0"
-Spark = "nezuo/spark@0.2.0"
+Matter = "matter-ecs/matter@0.8.4"
+Promise = "evaera/promise@4.0.0"

@@ -1,23 +1,23 @@
 {
-  "name": "minimal",
-  "emitLegacyScripts": false,
-  "tree": {
-    "$className": "DataModel",
-    "Players": {
-      "$properties": {
-        "CharacterAutoLoads": false
-      }
-    },
-    "ReplicatedStorage": {
-      "Client": {
-        "$path": "src/client"
-      },
-      "Packages": {
-        "$path": "../../Packages",
-        "Spark": {
-          "$path": "../../"
+    "name": "minimal",
+    "emitLegacyScripts": false,
+    "tree": {
+        "$className": "DataModel",
+        "Players": {
+            "$properties": {
+                "CharacterAutoLoads": false
+            }
+        },
+        "ReplicatedStorage": {
+            "Client": {
+                "$path": "src/client"
+            },
+            "Packages": {
+                "$path": "../../Packages",
+                "Spark": {
+                    "$path": "../../"
+                }
+            }
         }
-      }
     }
-  }
 }

@@ -5,11 +5,6 @@ local Inputs = require(script.Parent.Inputs)
 local Promise = require(script.Parent.Parent.Promise)
 
 --[=[
-    @type Device "Keyboard" | "Mouse" | "Gamepad"
-    @within Rebind
-]=]
-
---[=[
 	Queries for the first button a user presses. This is useful for rebinding based on user input.
 
 	```lua
@@ -67,7 +62,26 @@ function Rebind:withoutInputs(inputs)
 	return self
 end
 
-function Rebind:retainInput(callback)
+--[=[
+	Sets a callback that determines if an input can be returned by Rebind.
+
+	```lua
+	Rebind.new()
+		:setRetainInput(function(input, sunk)
+			if sunk then
+				-- Ignore inputs that are sunk.
+				return false
+			end
+
+			-- Don't allow the Escape key.
+			return input ~= Enum.KeyCode.Escape
+		end)
+	```
+
+	@param callback (input: Button, sunk: boolean) -> boolean
+	@return Rebind -- Returns self
+]=]
+function Rebind:setRetainInput(callback)
 	self.retainInputCallback = callback
 
 	return self

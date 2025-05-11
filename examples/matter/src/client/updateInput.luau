@@ -1,5 +1,5 @@
 local function updateInput(_, state)
-	state.actions:update(state.inputState, state.inputMap)
+	state.actions:update(state.inputState)
 	state.inputState:clear()
 end
 
