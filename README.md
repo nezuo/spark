@@ -4,12 +4,14 @@ Spark is an input-action manager for Roblox.
 ## Features
 - Supports button, 1D, and 2D inputs.
 - Create virtual 1D/2D inputs using `VirtualAxis1d`/`VirtualAxis2d`.
-- Store all your input mappings in a single `InputMap` object.
-- Rebind inputs using APIs like `InputMap:insert` and `InputMap:remove`.
+- Rebind inputs using `Bindings`.
 
 ## Example
 ```lua
-local actions = Actions.new({"attack", "move" })
+local actions = Actions.new({ "attack", "move" }):setRebuildBindings(function(bindings)
+    bindings:bind("attack", Enum.UserInputType.MouseButton1)
+    bindings:bind("move", VirtualAxis2d.wasd())
+end)
 
 actions:justPressedSignal("attack"):connect(function()
     print("Attacked!")

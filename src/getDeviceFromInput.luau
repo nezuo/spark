@@ -1,3 +1,11 @@
+--[=[
+	Returns the [Device] for the given input if it exists.
+
+	@param input Button
+	@return Device?
+
+	@within Spark
+]=]
 local function getDeviceFromInput(input)
 	if typeof(input) ~= "EnumItem" then
 		return nil

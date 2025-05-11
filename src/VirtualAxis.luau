@@ -16,7 +16,6 @@
 	@class VirtualAxis
 ]=]
 local VirtualAxis = {}
-VirtualAxis.__index = VirtualAxis
 
 --[=[
 	Creates a `VirtualAxis` with the corresponding `options`.
@@ -25,11 +24,11 @@ VirtualAxis.__index = VirtualAxis
 	@return VirtualAxis
 ]=]
 function VirtualAxis.new(options)
-	return setmetatable({
+	return {
 		kind = "VirtualAxis",
 		positive = options.positive,
 		negative = options.negative,
-	}, VirtualAxis)
+	}
 end
 
 --[=[

@@ -5,11 +5,6 @@ local Inputs = require(script.Parent.Inputs)
 local Promise = require(script.Parent.Parent.Promise)
 
 --[=[
-    @type Device "Keyboard" | "Mouse" | "Gamepad"
-    @within Rebind
-]=]
-
---[=[
 	Queries for the first button a user presses. This is useful for rebinding based on user input.
 
 	```lua
@@ -68,6 +63,31 @@ function Rebind:withoutInputs(inputs)
 end
 
 --[=[
+	Sets a callback that determines if an input can be returned by Rebind.
+
+	```lua
+	Rebind.new()
+		:setRetainInput(function(input, sunk)
+			if sunk then
+				-- Ignore inputs that are sunk.
+				return false
+			end
+
+			-- Don't allow the Escape key.
+			return input ~= Enum.KeyCode.Escape
+		end)
+	```
+
+	@param callback (input: Button, sunk: boolean) -> boolean
+	@return Rebind -- Returns self
+]=]
+function Rebind:setRetainInput(callback)
+	self.retainInputCallback = callback
+
+	return self
+end
+
+--[=[
 	Returns a [Promise](https://eryn.io/roblox-lua-promise/api/Promise) that resolves with the first [Button] the user presses.
 
 	The promise can be cancelled if you no longer need the result.
@@ -77,10 +97,14 @@ end
 function Rebind:start()
 	return Promise.new(function(resolve, _, onCancel)
 		local connection
-		connection = UserInputService.InputBegan:Connect(function(inputObject)
+		connection = UserInputService.InputBegan:Connect(function(inputObject, sunk)
 			local input = if inputObject.KeyCode == Enum.KeyCode.Unknown
 				then inputObject.UserInputType
 				else inputObject.KeyCode
+
+			if self.retainInputCallback ~= nil and not self.retainInputCallback(input, sunk) then
+				return
+			end
 
 			-- The only UserInputType buttons are mouse buttons.
 			if input:IsA("UserInputType") and Inputs.MOUSE_BUTTONS[input] == nil then
