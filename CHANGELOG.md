@@ -10,6 +10,8 @@ In return, features like modifiers were made possible.
 See the docs and examples for the updated API.
 
 Changes:
+* Files now use the `.luau` extension instead of `.lua`
+* Added types
 * `Actions`
     * Added `Actions:setAssociatedGamepad`
     * Added `Actions:removeAssociatedGamepad`
