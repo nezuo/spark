@@ -2,6 +2,10 @@
 
 ## Unreleased Changes
 
+## 0.3.1 - May 25, 2025
+* Added types for `Actions:setAssociatedGamepad` and `Actions:removeAssociatedGamepad`
+* Added support for reading the depth value of gamepad triggers via `Actions:axis`
+
 ## 0.3.0 - May 10, 2025
 This release contains breaking changes and an overhauled API.
 Spark no longer handles the serialization of customized inputs, this has to be done user side.
