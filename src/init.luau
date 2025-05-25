@@ -28,6 +28,8 @@ export type Bindings<T> = {
 }
 
 export type Actions<T> = {
+	setAssociatedGamepad: (self: Actions<T>, gamepad: Enum.UserInputType) -> (),
+	removeAssociatedGamepad: (self: Actions<T>) -> (),
 	setRebuildBindings: (self: Actions<T>, rebuildBindings: (bindings: Bindings<T>) -> ()) -> Actions<T>,
 	rebuildBindings: (self: Actions<T>) -> (),
 	update: (self: Actions<T>, inputState: InputState) -> (),
