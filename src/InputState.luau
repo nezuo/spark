@@ -25,12 +25,18 @@ function InputState.new()
 		gamepadButtons[keyCode] = {}
 	end
 
+	local gamepadTriggers = {}
+	for keyCode in Inputs.GAMEPAD_TRIGGERS do
+		gamepadTriggers[keyCode] = {}
+	end
+
 	local state = {
 		keycodes = {},
 		mouseButtons = {},
 		mouseWheel = 0,
 		mouseDelta = Vector2.zero,
 		gamepadButtons = gamepadButtons,
+		gamepadTriggers = gamepadTriggers,
 		gamepadThumbsticks = {
 			[Enum.KeyCode.Thumbstick1] = {},
 			[Enum.KeyCode.Thumbstick2] = {},
@@ -46,6 +52,10 @@ function InputState.new()
 			local gamepad = inputObject.UserInputType
 
 			gamepadButtons[keyCode][gamepad] = inputObject.UserInputState == Enum.UserInputState.Begin
+		elseif Inputs.GAMEPAD_TRIGGERS[keyCode] then
+			local gamepad = inputObject.UserInputType
+
+			gamepadTriggers[keyCode][gamepad] = inputObject.Position.Z
 		elseif keyCode ~= Enum.KeyCode.Unknown then
 			state.keycodes[keyCode] = inputObject.UserInputState == Enum.UserInputState.Begin
 		end
@@ -56,6 +66,10 @@ function InputState.new()
 			state.mouseDelta = Vector2.new(inputObject.Delta.X, -inputObject.Delta.Y)
 		elseif inputObject.UserInputType == Enum.UserInputType.MouseWheel then
 			state.mouseWheel = inputObject.Position.Z
+		elseif Inputs.GAMEPAD_TRIGGERS[inputObject.KeyCode] then
+			local gamepad = inputObject.UserInputType
+
+			gamepadTriggers[inputObject.KeyCode][gamepad] = inputObject.Position.Z
 		elseif inputObject.KeyCode == Enum.KeyCode.Thumbstick1 or inputObject.KeyCode == Enum.KeyCode.Thumbstick2 then
 			local gamepad = inputObject.UserInputType
 
@@ -102,6 +116,12 @@ function InputState:pressed(input, gamepad)
 				end
 
 				return self.state.gamepadButtons[input][gamepad] == true
+			elseif Inputs.GAMEPAD_TRIGGERS[input] then
+				if gamepad == nil or self.state.gamepadTriggers[input][gamepad] == nil then
+					return false
+				end
+
+				return self.state.gamepadTriggers[input][gamepad] > 0
 			else
 				return self.state.keycodes[input] == true
 			end
@@ -144,6 +164,12 @@ function InputState:axis(input, gamepad)
 				end
 
 				return if self.state.gamepadButtons[input][gamepad] then 1 else 0
+			elseif Inputs.GAMEPAD_TRIGGERS[input] then
+				if gamepad == nil then
+					return 0
+				end
+
+				return self.state.gamepadTriggers[input][gamepad] or 0
 			else
 				return if self.state.keycodes[input] then 1 else 0
 			end
