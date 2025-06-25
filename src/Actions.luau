@@ -347,6 +347,13 @@ function Actions:clampedAxis2d(action)
 	end
 end
 
+--[=[
+	Manually presses `action` until [Actions:update] is called.
+
+	See [Mobile](../docs/Mobile) for an example of usage with UI buttons.
+
+	@param action string
+]=]
 function Actions:press(action)
 	self.states[action].manualPresses += 1
 end
